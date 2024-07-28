@@ -1,26 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from "react";
+import "./App.css";
+import styled from "styled-components";
+import SideBar from "./components/global/sideBar/SideBar";
+import PermissionWrapper from "./components/permissionWrapper/PermissionWrapper";
+import { BrowserRouter, Routes } from "react-router-dom";
+import { Router } from "./routes/router";
+import TopBar from "./components/global/topBar/TopBar";
+import { ColorModeContext, useMode } from "./theme";
+import { ThemeProvider } from "@mui/material";
 
 function App() {
+  const { theme, colorMode } = useMode();
+  const { toggleColorMode } = useContext(ColorModeContext);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Wrapper>
+              <PermissionWrapper>
+                <SideBar />
+              </PermissionWrapper>
+              <PageWrapper>
+                <TopBar />
+                <Routes>{Router}</Routes>
+              </PageWrapper>
+            </Wrapper>
+          </BrowserRouter>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </>
   );
 }
 
 export default App;
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: #e5e4e2;
+`;
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+`;
