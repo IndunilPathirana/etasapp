@@ -15,7 +15,7 @@ import {
   createTestSuite,
   getTestSuites,
   removeTestSuite,
-} from "../../../Api/testSuiteService";
+} from "../../../api/testSuiteService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 
@@ -54,7 +54,6 @@ export default function SideBar() {
   const deleteTestSuite = () => {
     handleConfClose()
     removeTestSuite(selectedIndex);
-    
   };
 
   return (
