@@ -1,9 +1,20 @@
 import React from "react";
-import styled from 'styled-components';
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
+import LauncherTable from "./table/LauncherTable";
+import { Box, Paper, styled, Typography } from "@mui/material";
+import ButtonComponent from "../../reusableComponents/Button/Button";
+import { TableHeader, TableHeaderText, TableWrapper } from "../../reusableComponents/StyledComponents/styledComponents";
 
 export default function Launcher() {
-  console.log("Lamcher");
-  return <ContentWrapper> </ContentWrapper>;
+  return (
+    <ContentWrapper>
+      <TableWrapper>
+        <TableHeader>
+         <TableHeaderText>Launcher Details</TableHeaderText>
+         <ButtonComponent name="create"/>
+        </TableHeader>
+        <LauncherTable />
+      </TableWrapper>
+    </ContentWrapper>
+  );
 }
-

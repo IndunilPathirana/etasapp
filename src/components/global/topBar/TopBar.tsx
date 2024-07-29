@@ -15,19 +15,20 @@ export default function TopBar() {
       position="sticky"
       justifyContent="space-between"
       sx={{
+        boxShadow:' 0px 4px 6px rgba(0, 0, 0, 0.1)',
         backgroundColor: "#e9e9e9",
         height: "70px",
       }}
     >
       <Box></Box>
-      <Box display="flex" borderRadius="310px">
-        <IconButton onClick={toggleColorMode}>
+      <Box  sx={{ display:'flex',alignItems:'center' }}>
+        <IconButton onClick={toggleColorMode} sx={{ width:'50px', height:'50px'}}>
           {true ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
         </IconButton>
-        <IconButton>
+        <IconButton sx={{ width:'50px', height:'50px'}}>
           <NotificationsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton sx={{ width:'50px', height:'50px'}}>
           <SettingsOutlinedIcon />
         </IconButton>
       </Box>

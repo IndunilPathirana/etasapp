@@ -10,7 +10,8 @@ export default function Home() {
         sx={{
           height: "200px",
           width: "200px",
-          backgroundColor: theme.palette.primary.main,
+          //backgroundColor: theme.palette.primary.main,
+          
         }}
       ></Box>
     </ContentWrapper>

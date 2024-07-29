@@ -11,7 +11,6 @@ import { ThemeProvider } from "@mui/material";
 
 function App() {
   const { theme, colorMode } = useMode();
-  const { toggleColorMode } = useContext(ColorModeContext);
   return (
     <>
       <ColorModeContext.Provider value={colorMode}>

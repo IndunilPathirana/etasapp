@@ -10,6 +10,7 @@ export type Route = {
   path: string;
   element: React.ReactNode;
   isSideBar: boolean;
+  icon?: React.ReactNode,
   children?: {
     path: String;
     element: React.ReactNode;

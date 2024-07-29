@@ -1,9 +1,23 @@
 /* Override inbuilt class .css-1wvake5 */
 .css-1wvake5 {
   border-right-width: 0px !important;
+  
 }
 
 /* Override inbuilt class .css-1wvake5 */
 .css-dip3t8 {
   background-color: rgb(249, 249, 249, 0) !important;
+}
+
+.ps-menu-button{
+  flex-direction: row-reverse !important;
+}
+
+.ps-submenu-expand-icon{
+  opacity: 0 ;
+  margin-right: 2px;
+}
+.ps-menu-label{
+  font-size: 16px !important;
+  font-weight: 500;
 }
