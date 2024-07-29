@@ -8,16 +8,23 @@ import Logo from "../../../assets/images/logo.png";
 import { Route, routes } from "../../../routes/routes";
 import { Link, useLocation } from "react-router-dom";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import TestAddForm from "../../app/Test/TestAddForm/TestAddForm";
 import { useState } from "react";
-import { createTestSuite, getTestSuites } from "../../../Api/testSuiteService";
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  createTestSuite,
+  getTestSuites,
+  removeTestSuite,
+} from "../../../Api/testSuiteService";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 
 export default function SideBar() {
   const location = useLocation();
 
   const [open, setOpen] = useState<boolean>(false);
+  const [openConf, setOpenConf] = useState<boolean>(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const handleClose = () => {
     setOpen(false);
@@ -25,16 +32,29 @@ export default function SideBar() {
   const handleOpen = () => {
     setOpen(true);
   };
+  const handleConfClose = () => {
+    setOpenConf(false);
+  };
+  const handleConfOpen = (index: number) => {
+    setSelectedIndex(index);
+    setOpenConf(true);
+  };
 
   const submitTestSuite = async (testSuite: string) => {
     try {
-      const response = await createTestSuite(testSuite);
+      const response = createTestSuite(testSuite);
       if (response) {
         handleClose();
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const deleteTestSuite = () => {
+    handleConfClose()
+    removeTestSuite(selectedIndex);
+    
   };
 
   return (
@@ -69,7 +89,7 @@ export default function SideBar() {
                       </IconButton>
                     }
                   >
-                    {getTestSuites().map((testSuite) => (
+                    {getTestSuites().map((testSuite, index) => (
                       <StyledMenuItem
                         isActive={location.pathname.includes(route.path)}
                         icon={
@@ -78,14 +98,14 @@ export default function SideBar() {
                               <IconButton onClick={handleOpen}>
                                 <EditIcon />
                               </IconButton>
-                              <IconButton onClick={handleOpen}>
+                              <IconButton onClick={() => handleConfOpen(index)}>
                                 <DeleteIcon />
                               </IconButton>
                             </>
                           ) : null
                         }
                       >
-                        <ItemName>{testSuite.name}</ItemName>
+                        <ItemName style={{ fontSize:'15px'}}>{testSuite.name}</ItemName>
                       </StyledMenuItem>
                     ))}
                   </SubMenu>
@@ -121,6 +141,13 @@ export default function SideBar() {
         formName="Test Suite"
         handleClose={handleClose}
         confirmAction={submitTestSuite}
+      />
+      <ConfirmationDialog
+        open={openConf}
+        formName="Test Suite"
+        handleClose={handleConfClose}
+        confirmAction={deleteTestSuite}
+        confirmMsg="Are you sure to delete this test suite"
       />
     </StyledSidebar>
   );

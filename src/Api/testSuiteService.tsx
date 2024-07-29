@@ -38,3 +38,15 @@ export const getTestSuites = (): { name: string }[] => {
     return [];
   }
 };
+
+export const removeTestSuite = (index: number) => {
+  const dataObject = localStorage.getItem("data");
+  if (dataObject) {
+    const existingDataObject = JSON.parse(dataObject);
+    let testSuites = [...existingDataObject.testSuites];
+    testSuites.splice(index, 1);
+    existingDataObject.testSuites = testSuites;
+    const stringifiedData = JSON.stringify(existingDataObject);
+    localStorage.setItem("data", stringifiedData);
+  }
+};
