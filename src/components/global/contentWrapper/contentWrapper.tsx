@@ -5,5 +5,5 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100vh - 50px);
-  background-color: #d5eaf0;
+  background-color: #E7E8ED;
 `;

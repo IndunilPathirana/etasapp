@@ -38,7 +38,7 @@ const Wrapper = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-color: #e5e4e2;
+  background-color: #E7E8ED;
 `;
 
 const PageWrapper = styled.div`
@@ -46,4 +46,5 @@ const PageWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100vh;
+  background-color: #E7E8ED;
 `;

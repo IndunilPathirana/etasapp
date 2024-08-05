@@ -10,7 +10,7 @@
 }
 
 .ps-menu-button{
-  flex-direction: row-reverse !important;
+  /* flex-direction: row-reverse !important; */
 }
 
 .ps-submenu-expand-icon{
@@ -20,4 +20,8 @@
 .ps-menu-label{
   font-size: 16px !important;
   font-weight: 500;
+}
+
+.css-wx7wi4{
+  margin-right: 0px !important;
 }

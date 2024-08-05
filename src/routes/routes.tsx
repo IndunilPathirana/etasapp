@@ -4,6 +4,10 @@ import Home from "../components/app/Home/Home";
 import Test from "../components/app/Test/Test";
 import Data from "../components/app/Data/Data";
 import Locator from "../components/app/Locator/Locator";
+import HomeIcon from '@mui/icons-material/Home';
+import LaunchIcon from '@mui/icons-material/Launch';
+import FolderIcon from '@mui/icons-material/Folder';
+import NearMeIcon from '@mui/icons-material/NearMe';
 
 export type Route = {
   name?:string,
@@ -24,12 +28,14 @@ export const routes: Route[] = [
     path: "/home",
     element: <Home />,
     isSideBar: true,
+    icon:<HomeIcon/>
   },
   {
     name:'Launcher',
     path: "/launcher",
     element: <Launcher />,
     isSideBar: true,
+    icon:<LaunchIcon/>
   },
   {
     name:'Test',
@@ -42,11 +48,13 @@ export const routes: Route[] = [
     path: "/data",
     element: <Data />,
     isSideBar: true,
+    icon:<FolderIcon/>
   },
   {
     name:'Locator',
     path: "/locator",
     element: <Locator />,
     isSideBar: true,
+    icon:<NearMeIcon/>
   },
 ];

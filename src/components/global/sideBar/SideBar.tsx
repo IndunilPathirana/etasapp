@@ -123,16 +123,14 @@ export default function SideBar() {
                       <IconButton onClick={handleOpen}>
                         <AddBoxIcon />
                       </IconButton>
-                    ) : null
+                    ) : route.icon
                   }
                 >
                   <ItemName>{route.name}</ItemName>
                 </StyledMenuItem>
               </Link>
             );
-          } else {
-            return null;
-          }
+          } 
         })}
       </Menu>
       <TestAddForm
@@ -158,18 +156,24 @@ interface StyledMenuItemProps {
 }
 
 const StyledSidebar = styled(Sidebar)`
-  background-color: #e9e9e9;
-  box-shadow: rgba(48, 48, 48, 0.15) 1px 1.95px 1px;
+  background-color: #ffffff;
+  //box-shadow: rgba(214, 212, 212, 0.15) 1px 1.95px 1px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `;
 
 const StyledMenuItem = styled(MenuItem)<StyledMenuItemProps>`
-  color: #686868;
-  background-color: ${(props) => (props.isActive ? "white" : "")};
+  /* display: flex; */
+  color: ${(props) => (props.isActive ? "#7ABBF5" : "#686868")};
+  background-color: ${(props) => (props.isActive ? "#f1f1f1" : "")};
+  &:hover {
+    color: #7ABBF5; /* Change text color on hover */
+    background-color: ${(props) => (props.isActive ? "#e1e1e1" : "#f9f9f9")}; /* Change background color on hover */
+  }
 `;
 
 export const ItemName = Styled(Typography)`
   && {
-    font-size: 16px;
+    font-size: 14px;
     margin: 10px 0;
     padding-left:10px;
     color:'red'

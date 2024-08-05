@@ -25,7 +25,7 @@ export default function Table(props:TableProps) {
       <Box
         sx={{
           height: 400,
-          width: "99%",
+          // width: "99%",
         }}
       >
         <StyledDataGrid
@@ -66,7 +66,7 @@ function customCheckbox(theme:Theme) {
   }
   
   const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-    border: '',
+    borderRadius: '10px',
     width: "100%",
     color:
       theme.palette.mode === "light"
@@ -86,6 +86,9 @@ function customCheckbox(theme:Theme) {
     ].join(","),
     WebkitFontSmoothing: "auto",
     letterSpacing: "normal",
+    '& .MuiDataGrid-columnHeaders': {
+    borderRadius: '15px', // Adjust the border radius as needed
+  },
     "& .MuiDataGrid-columnsContainer": {
       backgroundColor: theme.palette.mode === "light" ? "#fafafa" : "#1d1d1d",
     },
@@ -140,6 +143,9 @@ function customCheckbox(theme:Theme) {
     },
     "& .css-axafay-MuiDataGrid-virtualScroller": {
       overflow: "hidden",
+    },
+    "& .css-wop1k0-MuiDataGrid-footerContainer":{
+       display:'none'
     },
   
     ...customCheckbox(theme),

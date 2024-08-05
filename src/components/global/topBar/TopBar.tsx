@@ -16,7 +16,7 @@ export default function TopBar() {
       justifyContent="space-between"
       sx={{
         boxShadow:' 0px 4px 6px rgba(0, 0, 0, 0.1)',
-        backgroundColor: "#e9e9e9",
+        backgroundColor: "#ffffff",
         height: "70px",
       }}
     >
