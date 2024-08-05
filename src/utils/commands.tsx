@@ -1,4 +1,4 @@
-type Command = {
+export type Command = {
   name: string,
   locator?:boolean,
   data?:boolean,
@@ -9,8 +9,8 @@ export const commands: Command[] = [
   {
     name: "Branch.BasedOnData",
     locator:true,
-    data:true,
-    branch:true
+    data:false,
+    branch:false
   },
   {
     name: "Branch.BasedOnValue",

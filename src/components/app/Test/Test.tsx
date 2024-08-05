@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
 import {
   TableHeader,
@@ -7,7 +7,8 @@ import {
 } from "../../reusableComponents/StyledComponents/styledComponents";
 import Table from "../../reusableComponents/Table/Table";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
-import { commands } from "../../../utils/commands";
+import { Command, commands } from "../../../utils/commands";
+import ButtonComponent from "../../reusableComponents/Button/Button";
 
 export default function Test() {
   const columns = [
@@ -46,6 +47,21 @@ export default function Test() {
 
   const commandsArray: { name: string }[] = commands;
 
+  const [selectedCommand, setSelectedCommand] = useState<Command>();
+  const [data, setData] = useState<{
+    [key: string]: string;
+  }>();
+
+  const handleInput = (target: string, value: string) => {
+    setData((current = {}) => {
+      let newData = { ...current };
+      newData[target] = value;
+      return newData;
+    });
+  };
+
+  const submit = () => {};
+
   return (
     <ContentWrapper>
       <Box sx={{ display: "flex" }}>
@@ -61,10 +77,10 @@ export default function Test() {
               id="makeName"
               options={commandsArray}
               getOptionLabel={(option) => option.name}
-              // onChange={(event, newValue) => {
-              //     inputHandler(newValue);
-              // }}
-              style={{ height: "50px", marginBottom: "10px", width: "350px" }}
+              onChange={(event, newValue) => {
+                setSelectedCommand(newValue);
+              }}
+              style={{ height: "50px", width: "350px" }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -73,12 +89,48 @@ export default function Test() {
                   sx={{
                     backgroundColor: "#f5f7f7",
                   }}
-                  margin="normal"
                   size="small"
                 />
               )}
               disableClearable
             />
+            {selectedCommand?.data ? (
+              <>
+                {" "}
+                <Typography>Data</Typography>
+                <TextField
+                  name="data"
+                  sx={{ width: "350px" }}
+                  InputProps={{
+                    sx: { fontSize: 15, padding: "1px", height: "40px" },
+                  }}
+                  onChange={(event) => {
+                    handleInput("data", event.target.value);
+                  }}
+                  value={data?.data}
+                />{" "}
+              </>
+            ) : null}
+            {selectedCommand?.locator ? (
+              <>
+                {" "}
+                <Typography>Locator</Typography>
+                <TextField
+                  name="locator"
+                  sx={{ width: "350px" }}
+                  InputProps={{
+                    sx: { fontSize: 15, padding: "1px", height: "40px" },
+                  }}
+                  onChange={(event) => {
+                    handleInput("locator", event.target.value);
+                  }}
+                  value={data?.locator}
+                />
+              </>
+            ) : null}
+            <Box sx={{ marginTop: "10px" }}>
+              <ButtonComponent name="submit" onClick={submit} color="#38b000" />
+            </Box>
           </TableWrapper>
         </Box>
       </Box>

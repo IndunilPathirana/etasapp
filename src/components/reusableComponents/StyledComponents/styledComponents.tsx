@@ -5,6 +5,8 @@ import { DataGrid } from "@mui/x-data-grid";
 export const TableWrapper = styled(Paper)`
   /* padding: 20px; */
   margin: 20px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const TableHeader = styled(Box)`
