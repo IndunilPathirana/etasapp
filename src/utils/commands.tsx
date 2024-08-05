@@ -1,252 +1,375 @@
 type Command = {
-    name:string
-}
+  name: string,
+  locator?:boolean,
+  data?:boolean,
+  branch?:boolean
+};
 
-export const commands : Command[] = [
-    {
-        name:'Branch.BasedOnData'
-    },
-    {
-        name:'Branch.BasedOnValue'
-    },{
-        name:'Branch.OnElementAttribute'
-    },{
-        name:'Branch.OnElementText'
-    },{
-        name:'Branch.OnElementValue'
-    },{
-        name:'Browser.Alerts.Cancel'
-    },{
-        name:'Browser.Alerts.OK'
-    },{
-        name:'Browser.ExecuteScript'
-    },{
-        name:'Browser.Frames.ToChild'
-    },{
-        name:'Browser.Frames.ToMainPage'
-    },{
-        name:'Browser.Frames.ToParent'
-    },{
-        name:'Browser.Frames.ToVisibleChild'
-    },{
-        name:'Browser.GetSource'
-    },{
-        name:'Browser.Navigate.Back'
-    },{
-        name:'Browser.Navigate.Forward'
-    },{
-        name:'Browser.Navigate.ToURL'
-    },{
-        name:'Browser.Open'
-    },{
-        name:'Browser.Quit'
-    },{
-        name:'Browser.Switch'
-    },{
-        name:'Browser.Validate.Title'
-    },{
-        name:'Browser.Validate.URL'
-    },{
-        name:'Browser.Windows.Close'
-    },{
-        name:'Browser.Windows.Switch'
-    },{
-        name:'Component.Load'
-    },{
-        name:'Checkbox.Check'
-    },{
-        name:'Checkbox.Uncheck'
-    },{
-        name:'Checkbox.Validate.Checked'
-    },{
-        name:'Checkbox.Validate.Unchecked'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },{
-        name:'Branch.BasedOnData'
-    },
-
-]
-
+export const commands: Command[] = [
+  {
+    name: "Branch.BasedOnData",
+    locator:true,
+    data:true,
+    branch:true
+  },
+  {
+    name: "Branch.BasedOnValue",
+  },
+  {
+    name: "Branch.OnElementAttribute",
+  },
+  {
+    name: "Branch.OnElementText",
+  },
+  {
+    name: "Branch.OnElementValue",
+  },
+  {
+    name: "Browser.Alerts.Cancel",
+  },
+  {
+    name: "Browser.Alerts.OK",
+  },
+  {
+    name: "Browser.ExecuteScript",
+  },
+  {
+    name: "Browser.Frames.ToChild",
+  },
+  {
+    name: "Browser.Frames.ToMainPage",
+  },
+  {
+    name: "Browser.Frames.ToParent",
+  },
+  {
+    name: "Browser.Frames.ToVisibleChild",
+  },
+  {
+    name: "Browser.GetSource",
+  },
+  {
+    name: "Browser.Navigate.Back",
+  },
+  {
+    name: "Browser.Navigate.Forward",
+  },
+  {
+    name: "Browser.Navigate.ToURL",
+  },
+  {
+    name: "Browser.Open",
+  },
+  {
+    name: "Browser.Quit",
+  },
+  {
+    name: "Browser.Switch",
+  },
+  {
+    name: "Browser.Validate.Title",
+  },
+  {
+    name: "Browser.Validate.URL",
+  },
+  {
+    name: "Browser.Windows.Close",
+  },
+  {
+    name: "Browser.Windows.Switch",
+  },
+  {
+    name: "Component.Load",
+  },
+  {
+    name: "Checkbox.Check",
+  },
+  {
+    name: "Checkbox.Uncheck",
+  },
+  {
+    name: "Checkbox.Validate.Checked",
+  },
+  {
+    name: "Checkbox.Validate.Unchecked",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+  {
+    name: "Branch.BasedOnData",
+  },
+];

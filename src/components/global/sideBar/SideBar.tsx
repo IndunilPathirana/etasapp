@@ -5,26 +5,31 @@ import styled from "styled-components";
 import { Icon, IconButton, styled as Styled } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import Logo from "../../../assets/images/logo.png";
-import { Route, routes } from "../../../routes/routes";
+import { Route, routes as staticRoutes } from "../../../routes/routes";
 import { Link, useLocation } from "react-router-dom";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import TestAddForm from "../../app/Test/TestAddForm/TestAddForm";
 import { useState } from "react";
-import {
-  createTestSuite,
-  getTestSuites,
-  removeTestSuite,
-} from "../../../api/testSuiteService";
+import { getTestSuites } from "../../../api/testSuiteService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 
-export default function SideBar() {
+type SideBarProps = {
+  routes: Route[];
+  addTestSuite: (newTestSuite: string) => boolean;
+  deleteTestSuite: (testSuiteId: number) => Promise<void>;
+};
+
+export default function SideBar(props: SideBarProps) {
   const location = useLocation();
 
   const [open, setOpen] = useState<boolean>(false);
   const [openConf, setOpenConf] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  // const { routes, addTestSuite, deleteTestSuite } = useRoutes(staticRoutes);
+
+  const testSuites = getTestSuites();
 
   const handleClose = () => {
     setOpen(false);
@@ -42,7 +47,7 @@ export default function SideBar() {
 
   const submitTestSuite = async (testSuite: string) => {
     try {
-      const response = createTestSuite(testSuite);
+      const response = props.addTestSuite(testSuite);
       if (response) {
         handleClose();
       }
@@ -51,9 +56,10 @@ export default function SideBar() {
     }
   };
 
-  const deleteTestSuite = () => {
-    handleConfClose()
-    removeTestSuite(selectedIndex);
+  const deleteTestSuiteA = () => {
+    handleConfClose();
+    // removeTestSuite(selectedIndex);
+    props.deleteTestSuite(selectedIndex);
   };
 
   return (
@@ -72,25 +78,29 @@ export default function SideBar() {
         </Box>
       </Box>
       <Menu style={{ marginTop: "20px" }}>
-        {routes.map((route: Route) => {
+        {props.routes.map((route: Route) => {
           if (route.isSideBar === true) {
             if (route.name === "Test") {
               return (
-                <Link
-                  to={route.path}
-                  style={{ textDecoration: "none", color: "#686868" }}
+                // <Link
+                //   to={route.path}
+                //   style={{ textDecoration: "none", color: "#686868" }}
+                // >
+                <SubMenu
+                  label={route.name}
+                  icon={
+                    <IconButton onClick={handleOpen}>
+                      <AddBoxIcon />
+                    </IconButton>
+                  }
                 >
-                  <SubMenu
-                    label={route.name}
-                    icon={
-                      <IconButton onClick={handleOpen}>
-                        <AddBoxIcon />
-                      </IconButton>
-                    }
-                  >
-                    {getTestSuites().map((testSuite, index) => (
+                  {route?.children?.map((subRoute, index) => (
+                    <Link
+                      to={subRoute.path}
+                      style={{ textDecoration: "none", color: "#686868" }}
+                    >
                       <StyledMenuItem
-                        isActive={location.pathname.includes(route.path)}
+                        isActive={location.pathname.includes(subRoute.path)}
                         icon={
                           route.name === "Test" ? (
                             <>
@@ -104,11 +114,14 @@ export default function SideBar() {
                           ) : null
                         }
                       >
-                        <ItemName style={{ fontSize:'15px'}}>{testSuite.name}</ItemName>
+                        <ItemName style={{ fontSize: "15px" }}>
+                          {subRoute.name}
+                        </ItemName>
                       </StyledMenuItem>
-                    ))}
-                  </SubMenu>
-                </Link>
+                    </Link>
+                  ))}
+                </SubMenu>
+                // </Link>
               );
             }
             return (
@@ -123,14 +136,16 @@ export default function SideBar() {
                       <IconButton onClick={handleOpen}>
                         <AddBoxIcon />
                       </IconButton>
-                    ) : route.icon
+                    ) : (
+                      route.icon
+                    )
                   }
                 >
                   <ItemName>{route.name}</ItemName>
                 </StyledMenuItem>
               </Link>
             );
-          } 
+          }
         })}
       </Menu>
       <TestAddForm
@@ -143,7 +158,7 @@ export default function SideBar() {
         open={openConf}
         formName="Test Suite"
         handleClose={handleConfClose}
-        confirmAction={deleteTestSuite}
+        confirmAction={deleteTestSuiteA}
         confirmMsg="Are you sure to delete this test suite"
       />
     </StyledSidebar>
@@ -166,8 +181,11 @@ const StyledMenuItem = styled(MenuItem)<StyledMenuItemProps>`
   color: ${(props) => (props.isActive ? "#7ABBF5" : "#686868")};
   background-color: ${(props) => (props.isActive ? "#f1f1f1" : "")};
   &:hover {
-    color: #7ABBF5; /* Change text color on hover */
-    background-color: ${(props) => (props.isActive ? "#e1e1e1" : "#f9f9f9")}; /* Change background color on hover */
+    color: #7abbf5; /* Change text color on hover */
+    background-color: ${(props) =>
+      props.isActive
+        ? "#e1e1e1"
+        : "#f9f9f9"}; /* Change background color on hover */
   }
 `;
 
@@ -175,7 +193,6 @@ export const ItemName = Styled(Typography)`
   && {
     font-size: 14px;
     margin: 10px 0;
-    padding-left:10px;
-    color:'red'
+    /*  */
   }
 `;

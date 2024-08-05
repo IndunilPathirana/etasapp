@@ -1,60 +1,63 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Launcher from "../components/app/Launcher/Launcher";
 import Home from "../components/app/Home/Home";
 import Test from "../components/app/Test/Test";
 import Data from "../components/app/Data/Data";
 import Locator from "../components/app/Locator/Locator";
-import HomeIcon from '@mui/icons-material/Home';
-import LaunchIcon from '@mui/icons-material/Launch';
-import FolderIcon from '@mui/icons-material/Folder';
-import NearMeIcon from '@mui/icons-material/NearMe';
+import HomeIcon from "@mui/icons-material/Home";
+import LaunchIcon from "@mui/icons-material/Launch";
+import FolderIcon from "@mui/icons-material/Folder";
+import NearMeIcon from "@mui/icons-material/NearMe";
+
 
 export type Route = {
-  name?:string,
+  name?: string;
   path: string;
   element: React.ReactNode;
   isSideBar: boolean;
-  icon?: React.ReactNode,
+  icon?: React.ReactNode;
   children?: {
-    path: String;
+    name: string;
+    path: string;
     element: React.ReactNode;
-    isSideBar: boolean;
+    isSideBar?: boolean;
   }[];
 };
 
+
 export const routes: Route[] = [
   {
-    name:'Home',
+    name: "Home",
     path: "/home",
     element: <Home />,
     isSideBar: true,
-    icon:<HomeIcon/>
+    icon: <HomeIcon />,
   },
   {
-    name:'Launcher',
+    name: "Launcher",
     path: "/launcher",
     element: <Launcher />,
     isSideBar: true,
-    icon:<LaunchIcon/>
+    icon: <LaunchIcon />,
   },
   {
-    name:'Test',
+    name: "Test",
     path: "/test",
-    element: <Test/>,
+    element: <Test />,
     isSideBar: true,
   },
   {
-    name:'Data',
+    name: "Data",
     path: "/data",
     element: <Data />,
     isSideBar: true,
-    icon:<FolderIcon/>
+    icon: <FolderIcon />,
   },
   {
-    name:'Locator',
+    name: "Locator",
     path: "/locator",
     element: <Locator />,
     isSideBar: true,
-    icon:<NearMeIcon/>
+    icon: <NearMeIcon />,
   },
 ];

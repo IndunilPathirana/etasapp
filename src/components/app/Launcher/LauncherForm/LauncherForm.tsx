@@ -31,11 +31,11 @@ export default function LauncherForm(props: LauncherFormProps) {
       onClose={props.handleClose}
       aria-labelledby="delete-object"
       aria-describedby="delete-description"
-      sx={{ 
-        "& .css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop":{
-          backgroundColor: 'rgba(0, 0, 0, 0.2)'
-        }
-       }}
+      sx={{
+        "& .css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop": {
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+        },
+      }}
     >
       <DialogTitle
         id="delete-object"
@@ -74,37 +74,42 @@ export default function LauncherForm(props: LauncherFormProps) {
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Browser
         </DialogContentText>
-
-        <Grid container sx={{ width: "350px" }}>
-          <Grid item lg={6} >
-            <FormControlLabel
-              value="Chrome"
-              control={<Radio />}
-              label="Chrome"
-            />
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="female"
+          name="radio-buttons-group"
+        >
+          <Grid container sx={{ width: "350px" }}>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Chrome"
+                control={<Radio />}
+                label="Chrome"
+              />
+            </Grid>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Firefox"
+                control={<Radio />}
+                label="Firefox"
+              />
+            </Grid>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Microsoft Edge"
+                control={<Radio />}
+                label="Microsoft Edge"
+              />
+            </Grid>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Internet Explore"
+                control={<Radio />}
+                label="Internet Explore"
+              />
+            </Grid>
           </Grid>
-          <Grid item lg={6} >
-            <FormControlLabel
-              value="Firefox"
-              control={<Radio />}
-              label="Firefox"
-            />
-          </Grid>
-          <Grid item lg={6} >
-            <FormControlLabel
-              value="Microsoft Edge"
-              control={<Radio />}
-              label="Microsoft Edge"
-            />
-          </Grid>
-          <Grid item lg={6}>
-            <FormControlLabel
-              value="Internet Explore"
-              control={<Radio />}
-              label="Internet Explore"
-            />
-          </Grid>
-        </Grid>
+        </RadioGroup>
         {/* <FormControl sx={{ width: "250px" }}>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"

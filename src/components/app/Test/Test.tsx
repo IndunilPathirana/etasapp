@@ -6,7 +6,8 @@ import {
   TableWrapper,
 } from "../../reusableComponents/StyledComponents/styledComponents";
 import Table from "../../reusableComponents/Table/Table";
-import { Box } from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import { commands } from "../../../utils/commands";
 
 export default function Test() {
   const columns = [
@@ -42,20 +43,45 @@ export default function Test() {
       headerClassName: "#",
     },
   ];
+
+  const commandsArray: { name: string }[] = commands;
+
   return (
     <ContentWrapper>
-      <TableWrapper>
-        <TableHeader>
-          <TableHeaderText>Launcher Details</TableHeaderText>
-        </TableHeader>
-        <Box sx={{ display: "flex" }}>
-          <Box sx={{ width: "50%" }}>
+      <Box sx={{ display: "flex" }}>
+        <Box sx={{ width: "50%" }}>
+          <TableWrapper>
             <Table columns={columns} />
-          </Box>
-          <Box sx={{ width: "50%" }}>
-          </Box>
+          </TableWrapper>
         </Box>
-      </TableWrapper>
+        <Box sx={{ width: "50%" }}>
+          <TableWrapper sx={{ padding: "20px" }}>
+            <Typography>Command</Typography>
+            <Autocomplete
+              id="makeName"
+              options={commandsArray}
+              getOptionLabel={(option) => option.name}
+              // onChange={(event, newValue) => {
+              //     inputHandler(newValue);
+              // }}
+              style={{ height: "50px", marginBottom: "10px", width: "350px" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label=""
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "#f5f7f7",
+                  }}
+                  margin="normal"
+                  size="small"
+                />
+              )}
+              disableClearable
+            />
+          </TableWrapper>
+        </Box>
+      </Box>
     </ContentWrapper>
   );
 }

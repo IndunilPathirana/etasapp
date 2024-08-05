@@ -3,14 +3,19 @@ import "./App.css";
 import styled from "styled-components";
 import SideBar from "./components/global/sideBar/SideBar";
 import PermissionWrapper from "./components/permissionWrapper/PermissionWrapper";
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Router } from "./routes/router";
 import TopBar from "./components/global/topBar/TopBar";
 import { ColorModeContext, useMode } from "./theme";
 import { ThemeProvider } from "@mui/material";
+import { routes as staticRoutes } from "../src/routes/routes";
+import { useRoutes } from "./hooks/useRoutes";
 
 function App() {
   const { theme, colorMode } = useMode();
+  const { routes, addTestSuite, deleteTestSuite } = useRoutes(staticRoutes);
+  console.log(routes)
+  
   return (
     <>
       <ColorModeContext.Provider value={colorMode}>
@@ -18,11 +23,46 @@ function App() {
           <BrowserRouter>
             <Wrapper>
               <PermissionWrapper>
-                <SideBar />
+                <SideBar addTestSuite={addTestSuite} deleteTestSuite={deleteTestSuite} routes = {routes}/>
               </PermissionWrapper>
               <PageWrapper>
                 <TopBar />
-                <Routes>{Router}</Routes>
+                {/* <Routes>{Router}</Routes> */}
+                <Routes>
+                  {routes.map(
+                    (
+                      route: {
+                        name?: string;
+                        path: string;
+                        element: React.ReactNode;
+                        isSideBar: boolean;
+                        icon?: React.ReactNode;
+                        children?: {
+                          name: string;
+                          path: string;
+                          element: React.ReactNode;
+                          isSideBar?: boolean;
+                        }[];
+                      },
+                      index: number
+                    ) => (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={route.element}
+                      >
+                        {route.children &&
+                          route.children.map((child, childIndex) => (
+                            <Route
+                              key={childIndex}
+                              path={child.path}
+                              element={child.element}
+                            />
+                          ))}
+                      </Route>
+                    )
+                  )}
+                </Routes>
               </PageWrapper>
             </Wrapper>
           </BrowserRouter>
@@ -38,7 +78,7 @@ const Wrapper = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-color: #E7E8ED;
+  background-color: #e7e8ed;
 `;
 
 const PageWrapper = styled.div`
@@ -46,5 +86,5 @@ const PageWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100vh;
-  background-color: #E7E8ED;
+  background-color: #e7e8ed;
 `;
