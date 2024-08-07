@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
-import {
-  TableHeader,
-  TableHeaderText,
-  TableWrapper,
-} from "../../reusableComponents/StyledComponents/styledComponents";
+import { TableWrapper } from "../../reusableComponents/StyledComponents/styledComponents";
 import Table from "../../reusableComponents/Table/Table";
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Command, commands } from "../../../utils/commands";
 import ButtonComponent from "../../reusableComponents/Button/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { createTestSheet, getTestSheets } from "../../../api/testSheetService";
+import { useLocation } from "react-router-dom";
 
 export default function Test() {
   const columns = [
     {
-      field: "#",
+      field: "id",
       headerName: "#",
       width: 20,
       headerClassName: "#",
@@ -21,20 +27,19 @@ export default function Test() {
     {
       field: "command",
       headerName: "Command",
-      width: 300,
+      width: 200,
       headerClassName: "#",
-      flex: 1,
     },
     {
       field: "data",
       headerName: "Data",
-      width: 70,
+      width: 100,
       headerClassName: "#",
     },
     {
       field: "locator",
       headerName: "Locator",
-      width: 70,
+      width: 100,
       headerClassName: "#",
     },
     {
@@ -42,10 +47,42 @@ export default function Test() {
       headerName: "Action",
       width: 70,
       headerClassName: "#",
+      flex: 1,
+      renderCell: () => (
+        <Box>
+          <IconButton
+            color="primary"
+            aria-label="delete"
+            // onClick={() =>
+            //    handleDelete(params.row._id)
+            // }
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            color="primary"
+            aria-label="delete"
+            // onClick={() =>
+            //    handleDelete(params.row._id)
+
+            // }
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      ),
     },
   ];
 
-  const commandsArray: { name: string }[] = commands;
+  const [tableData, setTableData] = useState([
+    {
+      id: 1,
+      command: "Based.Onvalue",
+      data: "data",
+      locator: "locator",
+      action: "action",
+    },
+  ]);
 
   const [selectedCommand, setSelectedCommand] = useState<Command>();
   const [data, setData] = useState<{
@@ -60,14 +97,32 @@ export default function Test() {
     });
   };
 
-  const submit = () => {};
+  const location = useLocation();
+
+  const submit = () => {
+    const response = createTestSheet(
+      { ...data, id:1},
+      location.pathname.split("/")[2]
+    );
+    if(response){
+      const data = getTestSheets(location.pathname.split("/")[2]);
+      setTableData(data);
+    }
+  };
+
+  useEffect(() => {
+    const data = getTestSheets(location.pathname.split("/")[2]);
+    setTableData(data);
+  }, [location]);
+
+  console.log(selectedCommand);
 
   return (
     <ContentWrapper>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ width: "50%" }}>
           <TableWrapper>
-            <Table columns={columns} />
+            <Table columns={columns} data={tableData} />
           </TableWrapper>
         </Box>
         <Box sx={{ width: "50%" }}>
@@ -75,10 +130,12 @@ export default function Test() {
             <Typography>Command</Typography>
             <Autocomplete
               id="makeName"
-              options={commandsArray}
+              options={commands}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
                 setSelectedCommand(newValue);
+                handleInput('command',newValue?.name)
+                console.log(newValue);
               }}
               style={{ height: "50px", width: "350px" }}
               renderInput={(params) => (
@@ -96,7 +153,6 @@ export default function Test() {
             />
             {selectedCommand?.data ? (
               <>
-                {" "}
                 <Typography>Data</Typography>
                 <TextField
                   name="data"
@@ -108,12 +164,11 @@ export default function Test() {
                     handleInput("data", event.target.value);
                   }}
                   value={data?.data}
-                />{" "}
+                />
               </>
             ) : null}
             {selectedCommand?.locator ? (
               <>
-                {" "}
                 <Typography>Locator</Typography>
                 <TextField
                   name="locator"

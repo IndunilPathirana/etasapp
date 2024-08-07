@@ -8,6 +8,7 @@ export const createTestSuite = (testSuite: string): boolean => {
         testSuites: [
           {
             name: testSuite,
+            testSheets:[]
           },
         ],
       };

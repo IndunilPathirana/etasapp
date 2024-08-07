@@ -76,7 +76,7 @@ export default function Launcher() {
         <ButtonComponent name="create" onClick={handleOpen} color="#38b000"/>
       </TableHeader>
       <TableWrapper>
-        <Table columns={columns} />
+        <Table columns={columns} data={[]}/>
       </TableWrapper>
       <LauncherForm handleClose={handleClose} open={openForm} />
     </ContentWrapper>
