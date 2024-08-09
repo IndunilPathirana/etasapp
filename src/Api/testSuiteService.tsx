@@ -29,6 +29,7 @@ export const createTestSuite = (testSuite: string): boolean => {
 
 export const getTestSuites = (): { name: string }[] => {
   const dataObject = localStorage.getItem("data");
+  
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
     const testSuites = existingDataObject.testSuites.map(
