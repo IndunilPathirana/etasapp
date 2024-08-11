@@ -2,7 +2,7 @@ import { DataObject } from "./DataStructure";
 
 export const createTestSheet = (
   testSheet: {
-    id: number;
+    id: string;
     command?: string;
     data?: string;
     locator?: string;
@@ -14,30 +14,29 @@ export const createTestSheet = (
     const dataObject = localStorage.getItem("data");
     if (dataObject) {
       let existingDataObject = JSON.parse(dataObject);
-    console.log(existingDataObject);
+      //console.log(existingDataObject);
       let filteredTestSuite = existingDataObject.testSuites.find(
         (t: { name: string }) => t.name === testSuite
       );
-      console.log(filteredTestSuite)
+      console.log("test suites", filteredTestSuite);
       if (!filteredTestSuite?.testSheets) {
         filteredTestSuite.testSheets = [];
         filteredTestSuite.testSheets.push(testSheet);
-      }else{
+      } else {
         filteredTestSuite.testSheets.push(testSheet);
       }
-      
-    //console.log(filteredTestSuite);
+
+      //console.log(filteredTestSuite);
       const testSuiteIndex = existingDataObject.testSuites.findIndex(
         (t: { name: string }) => t.name === testSuite
       );
-      existingDataObject.testSuites[testSuiteIndex] = filteredTestSuite
-      console.log(existingDataObject)
+      existingDataObject.testSuites[testSuiteIndex] = filteredTestSuite;
+      console.log(existingDataObject);
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
     }
 
     //   existingDataObject.testSuites.push({ name: testSuite });
-      
 
     return true;
   } catch (error) {
@@ -46,24 +45,54 @@ export const createTestSheet = (
   }
 };
 
+export const getTestSheets = (testSuite: string) => {
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      console.log(existingDataObject);
+      let filteredTestSuite = existingDataObject.testSuites.find(
+        (t: { name: string }) => t.name === testSuite
+      );
+      console.log(filteredTestSuite.testSheets);
+      return filteredTestSuite.testSheets;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
 
-export const getTestSheets = (
-    testSuite: string
-  ) => {
-    try {
-      
-      const dataObject = localStorage.getItem("data");
-      if (dataObject) {
-        let existingDataObject = JSON.parse(dataObject);
-        console.log(existingDataObject);
-        let filteredTestSuite = existingDataObject.testSuites.find(
-          (t: { name: string }) => t.name === testSuite
-        );
-        console.log(filteredTestSuite.testSheets)
-        return filteredTestSuite.testSheets ;
+export const removeTestSheet = (  testSuite: string,id: string): boolean => {
+  console.log("remove test Sheets")
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      console.log(existingDataObject);
+      let filteredTestSuite = existingDataObject.testSuites.find(
+        (t: { name: string }) => t.name === testSuite
+      );
+      let filteredTestSheets = filteredTestSuite.testSheets.filter(
+        (testSheet: {
+          id: string;
+          command?: string;
+          data?: string;
+          locator?: string;
+        }) => testSheet.id !== id
+      );
+      filteredTestSuite.testSheets = filteredTestSheets;
+      let filteredTestSuiteIndex = existingDataObject.testSuites.findIndex(
+        (t: { name: string }) => t.name === testSuite
+      );
+      existingDataObject[filteredTestSuiteIndex] = filteredTestSuite
+      console.log(existingDataObject);
+      const stringifiedData = JSON.stringify(existingDataObject);
+      localStorage.setItem("data", stringifiedData);
     }
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};

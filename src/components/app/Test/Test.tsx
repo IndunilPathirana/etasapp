@@ -13,16 +13,35 @@ import { Command, commands } from "../../../utils/commands";
 import ButtonComponent from "../../reusableComponents/Button/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { createTestSheet, getTestSheets } from "../../../api/testSheetService";
+import {
+  createTestSheet,
+  getTestSheets,
+  removeTestSheet,
+} from "../../../api/testSheetService";
 import { useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import {
+  GridRenderCellParams,
+  GridRowId,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 
 export default function Test() {
   const columns = [
     {
-      field: "id",
+      field: "",
       headerName: "#",
       width: 20,
       headerClassName: "#",
+      renderCell: (params: GridRenderCellParams) => {
+        if (
+          params.api.getRowIndexRelativeToVisibleRows(params.id) === undefined
+        ) {
+          return 1;
+        } else {
+          return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+        }
+      },
     },
     {
       field: "command",
@@ -53,19 +72,19 @@ export default function Test() {
           <IconButton
             color="primary"
             aria-label="delete"
-            // onClick={() =>
-            //    handleDelete(params.row._id)
-            // }
+            onClick={(event) => {
+              // event.stopPropagation();
+              console.log("edit");
+            }}
           >
             <EditIcon />
           </IconButton>
           <IconButton
             color="primary"
             aria-label="delete"
-            // onClick={() =>
-            //    handleDelete(params.row._id)
-
-            // }
+            onClick={() => {
+              deleteTestSheet();
+            }}
           >
             <DeleteIcon />
           </IconButton>
@@ -88,6 +107,7 @@ export default function Test() {
   const [data, setData] = useState<{
     [key: string]: string;
   }>();
+  const [selectedRow, setSelectedRow] = useState<GridRowId>("");
 
   const handleInput = (target: string, value: string) => {
     setData((current = {}) => {
@@ -101,28 +121,45 @@ export default function Test() {
 
   const submit = () => {
     const response = createTestSheet(
-      { ...data, id:1},
+      { ...data, id: uuidv4() },
       location.pathname.split("/")[2]
     );
-    if(response){
-      const data = getTestSheets(location.pathname.split("/")[2]);
-      setTableData(data);
+    if (response) {
+      fetchTestSheets();
     }
   };
 
   useEffect(() => {
-    const data = getTestSheets(location.pathname.split("/")[2]);
-    setTableData(data);
+    fetchTestSheets();
   }, [location]);
 
-  console.log(selectedCommand);
+  const rowSelect = (newSelectionModel: GridRowSelectionModel) => {
+    console.log("row selected");
+    console.log("Selected Row IDs:", newSelectionModel[0]);
+    setSelectedRow(newSelectionModel[0]);
+  };
+
+  const deleteTestSheet = () => {
+    const response = removeTestSheet(
+      location.pathname.split("/")[2],
+      selectedRow.toString()
+    );
+    if (response) {
+      fetchTestSheets();
+    }
+  };
+
+  const fetchTestSheets = () => {
+    const data = getTestSheets(location.pathname.split("/")[2]);
+    setTableData(data);
+  };
 
   return (
     <ContentWrapper>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ width: "50%" }}>
           <TableWrapper>
-            <Table columns={columns} data={tableData} />
+            <Table columns={columns} data={tableData} onRowSelect={rowSelect} />
           </TableWrapper>
         </Box>
         <Box sx={{ width: "50%" }}>
@@ -134,7 +171,7 @@ export default function Test() {
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
                 setSelectedCommand(newValue);
-                handleInput('command',newValue?.name)
+                handleInput("command", newValue?.name);
                 console.log(newValue);
               }}
               style={{ height: "50px", width: "350px" }}

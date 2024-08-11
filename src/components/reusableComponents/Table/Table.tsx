@@ -1,5 +1,5 @@
 import React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import {
   Accordion,
   AccordionDetails,
@@ -19,6 +19,8 @@ type TableProps = {
     flex?: number;
   }[];
   data: {}[];
+  onRowSelect ? :(newSelectionModel: GridRowSelectionModel)=>void;
+  
 };
 
 export default function Table(props: TableProps) {
@@ -43,7 +45,7 @@ export default function Table(props: TableProps) {
           }}
           // getRowId={getRowId} // Specify the custom ID function
           //disableSelectionOnClick
-          //onRowSelectionModelChange={onRowSelect}
+           onRowSelectionModelChange={props?.onRowSelect}
           getRowHeight={getRowHeight}
         />
       </Box>
