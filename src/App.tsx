@@ -10,6 +10,8 @@ import { ColorModeContext, useMode } from "./theme";
 import { ThemeProvider } from "@mui/material";
 import { routes as staticRoutes } from "../src/routes/routes";
 import { useRoutes } from "./hooks/useRoutes";
+import { SnackBarProvider } from "./context/SnackBarContext";
+import SnackBars from "./components/SnackBar/SnackBars";
 
 function App() {
   const { theme, colorMode } = useMode();
@@ -20,6 +22,7 @@ function App() {
     <>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
+        <SnackBarProvider>
           <BrowserRouter>
             <Wrapper>
               <PermissionWrapper>
@@ -66,6 +69,8 @@ function App() {
               </PageWrapper>
             </Wrapper>
           </BrowserRouter>
+          <SnackBars/>
+          </SnackBarProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </>

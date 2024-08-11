@@ -25,6 +25,9 @@ import {
   GridRowId,
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
+import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
+import { useSnackBars } from "../../../context/SnackBarContext";
+import { SnackBarTypes } from "../../../utils/constants/snackBarTypes";
 
 export default function Test() {
   const columns = [
@@ -83,7 +86,7 @@ export default function Test() {
             color="primary"
             aria-label="delete"
             onClick={() => {
-              deleteTestSheet();
+              handleOpenConf();
             }}
           >
             <DeleteIcon />
@@ -108,6 +111,9 @@ export default function Test() {
     [key: string]: string;
   }>();
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
+  const [openConf, setOpenConf] = useState<boolean>(false);
+
+  const { addSnackBar } = useSnackBars();
 
   const handleInput = (target: string, value: string) => {
     setData((current = {}) => {
@@ -122,7 +128,9 @@ export default function Test() {
   const submit = () => {
     const response = createTestSheet(
       { ...data, id: uuidv4() },
-      location.pathname.split("/")[2]
+      location.pathname.split("/")[2],
+      onSuccess,
+      onError
     );
     if (response) {
       fetchTestSheets();
@@ -142,16 +150,50 @@ export default function Test() {
   const deleteTestSheet = () => {
     const response = removeTestSheet(
       location.pathname.split("/")[2],
-      selectedRow.toString()
+      selectedRow.toString(),
+      onSuccessDelete,
+      onError
     );
+    handleCloseConf();
     if (response) {
       fetchTestSheets();
     }
+  };
+  const onSuccess = () => {
+    addSnackBar({
+      type: "success",
+      message: "Test Suite Added Successfully",
+    });
+  };
+  const onSuccessEdit = () => {
+    addSnackBar({
+      type: "success",
+      message: "Test Suite updated Successfully",
+    });
+  };
+  const onSuccessDelete = () => {
+    addSnackBar({
+      type: "warning",
+      message: "Test Suite Deleted Successfully",
+    });
+  };
+  const onError = () => {
+    addSnackBar({
+      type: "error",
+      message: "There is an error",
+    });
   };
 
   const fetchTestSheets = () => {
     const data = getTestSheets(location.pathname.split("/")[2]);
     setTableData(data);
+  };
+
+  const handleOpenConf = () => {
+    setOpenConf(true);
+  };
+  const handleCloseConf = () => {
+    setOpenConf(false);
   };
 
   return (
@@ -166,7 +208,7 @@ export default function Test() {
           <TableWrapper sx={{ padding: "20px" }}>
             <Typography>Command</Typography>
             <Autocomplete
-              id="makeName"
+              id="commands"
               options={commands}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
@@ -226,6 +268,13 @@ export default function Test() {
           </TableWrapper>
         </Box>
       </Box>
+      <ConfirmationDialog
+        confirmAction={deleteTestSheet}
+        formName=""
+        handleClose={handleCloseConf}
+        open={openConf}
+        confirmMsg="Are you sure to delete this test sheet"
+      />
     </ContentWrapper>
   );
 }

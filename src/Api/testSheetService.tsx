@@ -7,7 +7,9 @@ export const createTestSheet = (
     data?: string;
     locator?: string;
   },
-  testSuite: string
+  testSuite: string,
+  onSuccess: () => void,
+  onError: () => void
 ): boolean => {
   try {
     console.log(testSheet, testSuite);
@@ -37,10 +39,11 @@ export const createTestSheet = (
     }
 
     //   existingDataObject.testSuites.push({ name: testSuite });
-
+    onSuccess();
     return true;
   } catch (error) {
     console.log(error);
+    onError();
     return false;
   }
 };
@@ -63,8 +66,13 @@ export const getTestSheets = (testSuite: string) => {
   }
 };
 
-export const removeTestSheet = (  testSuite: string,id: string): boolean => {
-  console.log("remove test Sheets")
+export const removeTestSheet = (
+  testSuite: string,
+  id: string,
+  onSuccess: () => void,
+  onError: () => void
+): boolean => {
+  console.log("remove test Sheets");
   try {
     const dataObject = localStorage.getItem("data");
     if (dataObject) {
@@ -85,14 +93,16 @@ export const removeTestSheet = (  testSuite: string,id: string): boolean => {
       let filteredTestSuiteIndex = existingDataObject.testSuites.findIndex(
         (t: { name: string }) => t.name === testSuite
       );
-      existingDataObject[filteredTestSuiteIndex] = filteredTestSuite
+      existingDataObject[filteredTestSuiteIndex] = filteredTestSuite;
       console.log(existingDataObject);
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
     }
+    onSuccess();
     return true;
   } catch (error) {
     console.log(error);
+    onError();
     return false;
   }
 };
