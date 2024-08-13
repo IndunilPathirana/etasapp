@@ -57,12 +57,22 @@ export default function Test() {
       headerName: "Data",
       width: 100,
       headerClassName: "#",
+      renderCell: (params: GridRenderCellParams) => {
+        if (params.row.data === null) {
+          return "null";
+        }
+      },
     },
     {
       field: "locator",
       headerName: "Locator",
       width: 100,
       headerClassName: "#",
+      renderCell: (params: GridRenderCellParams) => {
+        if (params.row.locator === null) {
+          return "null";
+        }
+      },
     },
     {
       field: "action",
@@ -96,20 +106,17 @@ export default function Test() {
     },
   ];
 
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      command: "Based.Onvalue",
-      data: "data",
-      locator: "locator",
-      action: "action",
-    },
-  ]);
+  const [tableData, setTableData] = useState([]);
 
   const [selectedCommand, setSelectedCommand] = useState<Command>();
   const [data, setData] = useState<{
-    [key: string]: string;
-  }>();
+    [key: string]: string | null;
+  }>({
+    id: null,
+    command: null,
+    data: null,
+    locator: null,
+  });
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
   const [openConf, setOpenConf] = useState<boolean>(false);
 
@@ -126,6 +133,7 @@ export default function Test() {
   const location = useLocation();
 
   const submit = () => {
+    console.log({ ...data, id: uuidv4() });
     const response = createTestSheet(
       { ...data, id: uuidv4() },
       location.pathname.split("/")[2],

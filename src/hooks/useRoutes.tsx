@@ -29,8 +29,8 @@ interface UseRoutesReturnType {
 export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
   const [routes, setRoutes] = useState<Route[]>(staticRoutes);
 
-  const fetchTestSuites = (async () => {
-    console.log("executed again")
+  const fetchTestSuites = async () => {
+    console.log("executed again");
     try {
       const testSuites = getTestSuites();
       const childrenRoutes = testSuites.map((testSuite) => ({
@@ -49,17 +49,21 @@ export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
     } catch (error) {
       console.error("Error fetching test suites:", error);
     }
-  });
+  };
 
   useEffect(() => {
     fetchTestSuites();
   }, []);
 
-  const addTestSuite =  (newTestSuite: string) => {
-    createTestSuite(newTestSuite);
-    // Add your logic to add the test suite to the backend or state
-     fetchTestSuites(); // Refresh routes
-     return true
+  const addTestSuite = (newTestSuite: string) => {
+    const response = createTestSuite(newTestSuite);
+    if (response) {
+      // Add your logic to add the test suite to the backend or state
+      fetchTestSuites(); // Refresh routes
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const deleteTestSuite = async (index: number) => {

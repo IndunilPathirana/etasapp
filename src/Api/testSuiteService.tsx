@@ -8,7 +8,7 @@ export const createTestSuite = (testSuite: string): boolean => {
         testSuites: [
           {
             name: testSuite,
-            testSheets:[]
+            testSheets: [],
           },
         ],
       };
@@ -16,6 +16,12 @@ export const createTestSuite = (testSuite: string): boolean => {
       localStorage.setItem("data", stringifiedData);
     } else {
       const existingDataObject = JSON.parse(dataObject);
+      const existingTestSuite = existingDataObject.testSuites.find(
+        (test:{name: string}) => test.name === testSuite);
+      console.log(existingTestSuite)
+      if (existingTestSuite) {
+        return false;
+      }
       existingDataObject.testSuites.push({ name: testSuite });
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
@@ -29,7 +35,7 @@ export const createTestSuite = (testSuite: string): boolean => {
 
 export const getTestSuites = (): { name: string }[] => {
   const dataObject = localStorage.getItem("data");
-  
+
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
     const testSuites = existingDataObject.testSuites.map(

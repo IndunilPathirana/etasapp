@@ -14,6 +14,7 @@ import { useState } from "react";
 import { getTestSuites } from "../../../api/testSuiteService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
+import { useSnackBars } from "../../../context/SnackBarContext";
 
 type SideBarProps = {
   routes: Route[];
@@ -27,9 +28,20 @@ export default function SideBar(props: SideBarProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [openConf, setOpenConf] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  // const { routes, addTestSuite, deleteTestSuite } = useRoutes(staticRoutes);
-
-  const testSuites = getTestSuites();
+  
+  const { addSnackBar } = useSnackBars();
+  const onSuccess = () => {
+    addSnackBar({
+      type: "success",
+      message: "Test Suite Added Successfully",
+    });
+  };
+  const onError = () => {
+    addSnackBar({
+      type: "error",
+      message: "Test sheet already exists",
+    });
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -48,17 +60,24 @@ export default function SideBar(props: SideBarProps) {
   const submitTestSuite = async (testSuite: string) => {
     try {
       const response = props.addTestSuite(testSuite);
+      console.log(response);
       if (response) {
+        onSuccess();
+        handleClose();
+      } else {
+        onError();
         handleClose();
       }
     } catch (error) {
+      onError();
+
       console.log(error);
     }
   };
 
   const deleteTestSuiteA = () => {
     handleConfClose();
-    // removeTestSuite(selectedIndex);
+    //removeTestSuite(selectedIndex);
     props.deleteTestSuite(selectedIndex);
   };
 
