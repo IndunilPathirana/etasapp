@@ -11,7 +11,6 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import TestAddForm from "../../app/Test/TestAddForm/TestAddForm";
 import { useState } from "react";
-import { getTestSuites } from "../../../api/testSuiteService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 import { useSnackBars } from "../../../context/SnackBarContext";
@@ -28,7 +27,7 @@ export default function SideBar(props: SideBarProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [openConf, setOpenConf] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  
+
   const { addSnackBar } = useSnackBars();
   const onSuccess = () => {
     addSnackBar({
@@ -77,7 +76,6 @@ export default function SideBar(props: SideBarProps) {
 
   const deleteTestSuiteA = () => {
     handleConfClose();
-    //removeTestSuite(selectedIndex);
     props.deleteTestSuite(selectedIndex);
   };
 
@@ -101,10 +99,7 @@ export default function SideBar(props: SideBarProps) {
           if (route.isSideBar === true) {
             if (route.name === "Test") {
               return (
-                // <Link
-                //   to={route.path}
-                //   style={{ textDecoration: "none", color: "#686868" }}
-                // >
+                
                 <SubMenu
                   label={route.name}
                   icon={
@@ -140,7 +135,7 @@ export default function SideBar(props: SideBarProps) {
                     </Link>
                   ))}
                 </SubMenu>
-                // </Link>
+              
               );
             }
             return (
@@ -191,20 +186,18 @@ interface StyledMenuItemProps {
 
 const StyledSidebar = styled(Sidebar)`
   background-color: #ffffff;
-  //box-shadow: rgba(214, 212, 212, 0.15) 1px 1.95px 1px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `;
 
 const StyledMenuItem = styled(MenuItem)<StyledMenuItemProps>`
-  /* display: flex; */
   color: ${(props) => (props.isActive ? "#7ABBF5" : "#686868")};
   background-color: ${(props) => (props.isActive ? "#f1f1f1" : "")};
   &:hover {
-    color: #7abbf5; /* Change text color on hover */
+    color: #7abbf5; 
     background-color: ${(props) =>
       props.isActive
         ? "#e1e1e1"
-        : "#f9f9f9"}; /* Change background color on hover */
+        : "#f9f9f9"}; 
   }
 `;
 
@@ -212,6 +205,5 @@ export const ItemName = Styled(Typography)`
   && {
     font-size: 14px;
     margin: 10px 0;
-    /*  */
   }
 `;

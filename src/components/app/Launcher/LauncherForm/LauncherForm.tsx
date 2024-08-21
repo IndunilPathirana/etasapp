@@ -1,13 +1,12 @@
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
   FormControlLabel,
-  FormLabel,
   Grid,
   MenuItem,
   Radio,
@@ -15,16 +14,82 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { getTestSuites } from "../../../../api/testSuiteService";
+import { useSnackBars } from "../../../../context/SnackBarContext";
+import { createLauncher } from "../../../../api/launcherService";
+import { v4 as uuidv4 } from "uuid";
 
 type LauncherFormProps = {
   confirmMsg?: string;
   open: boolean;
   handleClose: () => void;
-  // confirmAction: () => void;
+  getAllLaunchers: () => void;
 };
 
 export default function LauncherForm(props: LauncherFormProps) {
+  const [formData, setFormData] = useState<{
+    [key: string]: string | null;
+  }>({
+    id: null,
+    sheetName: "null",
+    testSuite: "null",
+    browser: "null",
+    testType: "null",
+    status: "null",
+    dataSheet: "null",
+    comment: "null",
+  });
+
+  const [testSuites, setTestSuites] = useState<
+    {
+      name: string;
+    }[]
+  >([{ name: "" }]);
+
+  const { addSnackBar } = useSnackBars();
+
+  const onSuccess = () => {
+    addSnackBar({
+      type: "success",
+      message: "Launcher Added Successfully",
+    });
+  };
+
+  const onError = () => {
+    addSnackBar({
+      type: "error",
+      message: "There is an error",
+    });
+  };
+
+  const handleInput = (target: string, value: string) => {
+    setFormData((current = {}) => {
+      let newData = { ...current };
+      newData[target] = value;
+      return newData;
+    });
+  };
+
+  const submitForm = () => {
+    createLauncher(
+      {
+        ...formData,
+        id: uuidv4(),
+      },
+      onSuccess,
+      onError
+    );
+    props.handleClose()
+    props.getAllLaunchers()
+  };
+
+  useEffect(() => {
+    const testSuites = getTestSuites();
+    setTestSuites(testSuites);
+    console.log(testSuites);
+  }, []);
+
   return (
     <Dialog
       open={props.open}
@@ -57,20 +122,34 @@ export default function LauncherForm(props: LauncherFormProps) {
           InputProps={{
             sx: { fontSize: 15, padding: "1px", height: "40px" },
           }}
-          // onChange={handleInput}
-          // value={testSuiteName}
+          onChange={(event) => handleInput("sheetName", event.target.value)}
+          value={formData?.sheetName}
         />
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Test Case
         </DialogContentText>
-        <TextField
-          sx={{ width: "350px" }}
-          InputProps={{
-            sx: { fontSize: 15, padding: "1px", height: "40px" },
+        <Autocomplete
+          id="commands"
+          options={testSuites}
+          getOptionLabel={(option) => option?.name}
+          onChange={(event, newValue) => {
+            handleInput("testSuite", newValue?.name);
           }}
-          // onChange={handleInput}
-          // value={testSuiteName}
+          style={{ height: "50px", width: "350px" }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label=""
+              variant="outlined"
+              sx={{
+                backgroundColor: "#f5f7f7",
+              }}
+              size="small"
+            />
+          )}
+          disableClearable
         />
+
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Browser
         </DialogContentText>
@@ -78,6 +157,8 @@ export default function LauncherForm(props: LauncherFormProps) {
           aria-labelledby="demo-radio-buttons-group-label"
           defaultValue="female"
           name="radio-buttons-group"
+          onChange={(event) => handleInput("browser", event.target.value)}
+          value={formData?.browser}
         >
           <Grid container sx={{ width: "350px" }}>
             <Grid item lg={6}>
@@ -110,45 +191,14 @@ export default function LauncherForm(props: LauncherFormProps) {
             </Grid>
           </Grid>
         </RadioGroup>
-        {/* <FormControl sx={{ width: "250px" }}>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="female"
-            name="radio-buttons-group"
-          >
-            <FormControlLabel
-              value="Chrome"
-              control={<Radio />}
-              label="Chrome"
-            />
-            <FormControlLabel
-              value="Firefox"
-              control={<Radio />}
-              label="Firefox"
-            />
-            <FormControlLabel
-              value="Microsoft Edge"
-              control={<Radio />}
-              label="Microsoft Edge"
-            />
-            <FormControlLabel
-              value="Internet Explore"
-              control={<Radio />}
-              label="Internet Explore"
-            />
-          </RadioGroup>
-        </FormControl> */}
+
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Test Type
         </DialogContentText>
         <Select
-          // value={formData?.salaryType || ""}
-          // onChange={(e) =>
-          //   handleChange(e?.target?.value || "", "salaryType")
-          // }
-          // disabled={state?.action === DEF_ACTIONS.VIEW}
+          value={formData?.testType || ""}
+          onChange={(event) => handleInput("testType", event.target.value)}
           sx={{
-            //   borderRadius: "8px",
             width: "350px",
           }}
           size="small"
@@ -160,13 +210,9 @@ export default function LauncherForm(props: LauncherFormProps) {
           Status
         </DialogContentText>
         <Select
-          // value={formData?.salaryType || ""}
-          // onChange={(e) =>
-          //   handleChange(e?.target?.value || "", "salaryType")
-          // }
-          // disabled={state?.action === DEF_ACTIONS.VIEW}
+          value={formData?.status || ""}
+          onChange={(event) => handleInput("status", event.target.value)}
           sx={{
-            //   borderRadius: "8px",
             width: "350px",
           }}
           size="small"
@@ -178,13 +224,9 @@ export default function LauncherForm(props: LauncherFormProps) {
           Data Sheet
         </DialogContentText>
         <Select
-          // value={formData?.salaryType || ""}
-          // onChange={(e) =>
-          //   handleChange(e?.target?.value || "", "salaryType")
-          // }
-          // disabled={state?.action === DEF_ACTIONS.VIEW}
+          value={formData?.dataSheet || ""}
+          onChange={(event) => handleInput("dataSheet", event.target.value)}
           sx={{
-            //   borderRadius: "8px",
             width: "350px",
           }}
           size="small"
@@ -200,8 +242,8 @@ export default function LauncherForm(props: LauncherFormProps) {
           InputProps={{
             sx: { fontSize: 15, padding: "1px", height: "40px" },
           }}
-          // onChange={handleInput}
-          // value={testSuiteName}
+          value={formData?.comment || ""}
+          onChange={(event) => handleInput("comment", event.target.value)}
         />
       </DialogContent>
 
@@ -215,7 +257,7 @@ export default function LauncherForm(props: LauncherFormProps) {
           Cancel
         </Button>
         <Button
-          // onClick={props.confirmAction}
+          onClick={submitForm}
           variant="contained"
           color="success"
           sx={{

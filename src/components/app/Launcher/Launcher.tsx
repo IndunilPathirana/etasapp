@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
 import LauncherTable from "./table/LauncherTable";
 import { Box, Paper, styled, Typography } from "@mui/material";
@@ -10,48 +10,65 @@ import {
 } from "../../reusableComponents/StyledComponents/styledComponents";
 import Table from "../../reusableComponents/Table/Table";
 import LauncherForm from "./LauncherForm/LauncherForm";
+import { getLaunchers } from "../../../api/launcherService";
+import { GridRenderCellParams } from "@mui/x-data-grid";
 
 export default function Launcher() {
   const columns = [
     {
-      field: "Sheet Name",
+      field: "",
+      headerName: "#",
+      width: 20,
+      headerClassName: "#",
+      renderCell: (params: GridRenderCellParams) => {
+        if (
+          params.api.getRowIndexRelativeToVisibleRows(params.id) === undefined
+        ) {
+          return 1;
+        } else {
+          return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+        }
+      },
+    },
+    {
+      field: "sheetName",
       headerName: "Sheet Name",
       width: 200,
       headerClassName: "#",
     },
     {
-      field: "Test Case",
+      field: "testSuite",
       headerName: "Test Case",
       width: 200,
       headerClassName: "#",
       // flex: 1,
     },
     {
-      field: "Browser",
+      field: "browser",
       headerName: "Browser",
-      width: 100,
+      width: 200,
       headerClassName: "#",
     },
     {
-      field: "Test type",
+      field: "testType",
       headerName: "Test type",
       width: 100,
       headerClassName: "#",
     },
     {
-      field: "Status",
+      field: "status",
       headerName: "Status",
       width: 100,
       headerClassName: "#",
     },
     {
-      field: "Data Sheet",
+      field: "dataSheet",
       headerName: "Data Sheet",
       width: 100,
       headerClassName: "#",
     },
     {
-      field: "Comment",
+      field: "comment",
       headerName: "Comment",
       width: 100,
       flex: 1,
@@ -59,26 +76,36 @@ export default function Launcher() {
     },
   ];
 
-  const [openForm,setOpenForm] = useState<boolean>(false)
+  const [openForm, setOpenForm] = useState<boolean>(false);
+  const [data, setData] = useState([]);
 
-  const handleOpen = ()=>{
-    setOpenForm(true)
-  }
-  
-  const handleClose = ()=>{
-    setOpenForm(false)
-  }
-  
+  const handleOpen = () => {
+    setOpenForm(true);
+  };
+
+  const handleClose = () => {
+    setOpenForm(false);
+  };
+
+  useEffect(() => {
+    getAllLaunchers();
+  }, []);
+
+  const getAllLaunchers = () => {
+    const response = getLaunchers();
+    setData(response);
+  };
+
   return (
     <ContentWrapper>
       <TableHeader>
         <TableHeaderText>Launcher Details</TableHeaderText>
-        <ButtonComponent name="create" onClick={handleOpen} color="#38b000"/>
+        <ButtonComponent name="create" onClick={handleOpen} color="#38b000" />
       </TableHeader>
       <TableWrapper>
-        <Table columns={columns} data={[]}/>
+        <Table columns={columns} data={data} />
       </TableWrapper>
-      <LauncherForm handleClose={handleClose} open={openForm} />
+      <LauncherForm handleClose={handleClose} open={openForm} getAllLaunchers={getAllLaunchers}/>
     </ContentWrapper>
   );
 }

@@ -8,4 +8,14 @@ export type DataObject = {
       locator?: string;
     }[];
   }[];
+  launchers?:{
+    id: string;
+    sheetName?:string;
+    testSuite?:string;
+    browser?:string;
+    testType?:string;
+    status?:string;
+    dataSheet?:string;
+    comment?:string
+  }[]
 };
