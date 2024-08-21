@@ -52,8 +52,7 @@ export const getLaunchers = () => {
   }
 };
 
-export const removeTestSheet = (
-  testSuite: string,
+export const removeLauncher = (
   id: string,
   onSuccess: () => void,
   onError: () => void
@@ -64,22 +63,10 @@ export const removeTestSheet = (
     if (dataObject) {
       let existingDataObject = JSON.parse(dataObject);
       console.log(existingDataObject);
-      let filteredTestSuite = existingDataObject.testSuites.find(
-        (t: { name: string }) => t.name === testSuite
+      let filteredLaunchers = existingDataObject.launchers.filter(
+        (launcher : { id: string }) => launcher.id !== id
       );
-      let filteredTestSheets = filteredTestSuite.testSheets.filter(
-        (testSheet: {
-          id: string;
-          command?: string;
-          data?: string;
-          locator?: string;
-        }) => testSheet.id !== id
-      );
-      filteredTestSuite.testSheets = filteredTestSheets;
-      let filteredTestSuiteIndex = existingDataObject.testSuites.findIndex(
-        (t: { name: string }) => t.name === testSuite
-      );
-      existingDataObject[filteredTestSuiteIndex] = filteredTestSuite;
+      existingDataObject.launchers = filteredLaunchers;
       console.log(existingDataObject);
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
