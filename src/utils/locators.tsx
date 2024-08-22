@@ -1,4 +1,4 @@
-type Locator = {
+export type Locator = {
   locator_name: string;
   locator_value: string;
 };

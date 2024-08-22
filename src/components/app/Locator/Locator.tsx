@@ -28,6 +28,7 @@ import {
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 import { useSnackBars } from "../../../context/SnackBarContext";
 import { SnackBarTypes } from "../../../utils/constants/snackBarTypes";
+import { Locator as LocatorType, locators } from "../../../utils/locators";
 
 export default function Locator() {
   const columns = [
@@ -47,14 +48,14 @@ export default function Locator() {
       },
     },
     {
-      field: "command",
-      headerName: "Command",
+      field: "locator_name",
+      headerName: "Name",
       width: 200,
       headerClassName: "#",
     },
     {
-      field: "data",
-      headerName: "Data",
+      field: "locator_value",
+      headerName: "Value",
       width: 100,
       headerClassName: "#",
       renderCell: (params: GridRenderCellParams) => {
@@ -63,17 +64,7 @@ export default function Locator() {
         }
       },
     },
-    {
-      field: "locator",
-      headerName: "Locator",
-      width: 100,
-      headerClassName: "#",
-      renderCell: (params: GridRenderCellParams) => {
-        if (params.row.locator === null) {
-          return "null";
-        }
-      },
-    },
+    
     {
       field: "action",
       headerName: "Action",
@@ -108,14 +99,13 @@ export default function Locator() {
 
   const [tableData, setTableData] = useState([]);
 
-  const [selectedCommand, setSelectedCommand] = useState<Command>();
+  const [selectedCommand, setSelectedCommand] = useState<LocatorType>();
   const [data, setData] = useState<{
     [key: string]: string | null;
   }>({
     id: null,
-    command: null,
-    data: null,
-    locator: null,
+    locator_name: null,
+    locator_value: null,
   });
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
   const [openConf, setOpenConf] = useState<boolean>(false);
@@ -213,14 +203,15 @@ export default function Locator() {
         </Box>
         <Box sx={{ width: "50%" }}>
           <TableWrapper sx={{ padding: "20px" }}>
-            <Typography>Command</Typography>
+            <Typography>Locator Name</Typography>
             <Autocomplete
               id="commands"
-              options={commands}
-              getOptionLabel={(option) => option.name}
+              options={locators}
+              getOptionLabel={(option) => option.locator_name}
               onChange={(event, newValue) => {
                 setSelectedCommand(newValue);
-                handleInput("command", newValue?.name);
+                handleInput("locator_name", newValue.locator_name);
+                handleInput("locator_value", newValue.locator_value);
                 console.log(newValue);
               }}
               style={{ height: "50px", width: "350px" }}
@@ -237,38 +228,7 @@ export default function Locator() {
               )}
               disableClearable
             />
-            {selectedCommand?.data ? (
-              <>
-                <Typography>Data</Typography>
-                <TextField
-                  name="data"
-                  sx={{ width: "350px" }}
-                  InputProps={{
-                    sx: { fontSize: 15, padding: "1px", height: "40px" },
-                  }}
-                  onChange={(event) => {
-                    handleInput("data", event.target.value);
-                  }}
-                  value={data?.data}
-                />
-              </>
-            ) : null}
-            {selectedCommand?.locator ? (
-              <>
-                <Typography>Locator</Typography>
-                <TextField
-                  name="locator"
-                  sx={{ width: "350px" }}
-                  InputProps={{
-                    sx: { fontSize: 15, padding: "1px", height: "40px" },
-                  }}
-                  onChange={(event) => {
-                    handleInput("locator", event.target.value);
-                  }}
-                  value={data?.locator}
-                />
-              </>
-            ) : null}
+            
             <Box sx={{ marginTop: "10px" }}>
               <ButtonComponent name="submit" onClick={submit} color="#38b000" />
             </Box>
