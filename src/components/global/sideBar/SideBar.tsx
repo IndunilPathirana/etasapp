@@ -14,11 +14,14 @@ import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 import { useSnackBars } from "../../../context/SnackBarContext";
+import LocatorAddForm from "../../app/Locator/LocatorAddForm/LocatorAddForm";
 
 type SideBarProps = {
   routes: Route[];
   addTestSuite: (newTestSuite: string) => boolean;
   deleteTestSuite: (testSuiteId: number) => Promise<void>;
+  addLocator: (newLocator: string) => boolean;
+  deleteLocator: (testSuiteId: number) => Promise<void>;
 };
 
 export default function SideBar(props: SideBarProps) {
@@ -27,6 +30,8 @@ export default function SideBar(props: SideBarProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [openConf, setOpenConf] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+
+  const [locatorOpen, setLocatorOpen] = useState<boolean>(false);
 
   const { addSnackBar } = useSnackBars();
   const onSuccess = () => {
@@ -42,11 +47,30 @@ export default function SideBar(props: SideBarProps) {
     });
   };
 
+  const onSuccessLocator = () => {
+    addSnackBar({
+      type: "success",
+      message: "Locator Added Successfully",
+    });
+  };
+  const onErrorLocator = () => {
+    addSnackBar({
+      type: "error",
+      message: "Locator already exists",
+    });
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
   const handleOpen = () => {
     setOpen(true);
+  };
+  const handleLocatorClose = () => {
+    setLocatorOpen(false);
+  };
+  const handleLocatorOpen = () => {
+    setLocatorOpen(true);
   };
   const handleConfClose = () => {
     setOpenConf(false);
@@ -69,7 +93,23 @@ export default function SideBar(props: SideBarProps) {
       }
     } catch (error) {
       onError();
+      console.log(error);
+    }
+  };
 
+  const submitLocator = async (locator: string) => {
+    try {
+      const response = props.addLocator(locator);
+      console.log(response);
+      if (response) {
+        onSuccessLocator();
+        handleLocatorClose();
+      } else {
+        onError();
+        handleLocatorClose();
+      }
+    } catch (error) {
+      onError();
       console.log(error);
     }
   };
@@ -97,13 +137,12 @@ export default function SideBar(props: SideBarProps) {
       <Menu style={{ marginTop: "20px" }}>
         {props.routes.map((route: Route) => {
           if (route.isSideBar === true) {
-            if (route.name === "Test") {
+            if (route.name === "Test" || route.name === "Locator") {
               return (
-                
                 <SubMenu
                   label={route.name}
                   icon={
-                    <IconButton onClick={handleOpen}>
+                    <IconButton onClick={route.name === "Test"? handleOpen : handleLocatorOpen}>
                       <AddBoxIcon />
                     </IconButton>
                   }
@@ -116,7 +155,7 @@ export default function SideBar(props: SideBarProps) {
                       <StyledMenuItem
                         isActive={location.pathname.includes(subRoute.path)}
                         icon={
-                          route.name === "Test" ? (
+                          route.name === "Test" || route.name === "Locator"? (
                             <>
                               <IconButton onClick={handleOpen}>
                                 <EditIcon />
@@ -135,7 +174,6 @@ export default function SideBar(props: SideBarProps) {
                     </Link>
                   ))}
                 </SubMenu>
-              
               );
             }
             return (
@@ -168,6 +206,12 @@ export default function SideBar(props: SideBarProps) {
         handleClose={handleClose}
         confirmAction={submitTestSuite}
       />
+      <LocatorAddForm
+        open={locatorOpen}
+        formName="Locator"
+        handleClose={handleLocatorClose}
+        confirmAction={submitLocator}
+      />
       <ConfirmationDialog
         open={openConf}
         formName="Test Suite"
@@ -193,11 +237,8 @@ const StyledMenuItem = styled(MenuItem)<StyledMenuItemProps>`
   color: ${(props) => (props.isActive ? "#7ABBF5" : "#686868")};
   background-color: ${(props) => (props.isActive ? "#f1f1f1" : "")};
   &:hover {
-    color: #7abbf5; 
-    background-color: ${(props) =>
-      props.isActive
-        ? "#e1e1e1"
-        : "#f9f9f9"}; 
+    color: #7abbf5;
+    background-color: ${(props) => (props.isActive ? "#e1e1e1" : "#f9f9f9")};
   }
 `;
 

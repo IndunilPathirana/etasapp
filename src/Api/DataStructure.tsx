@@ -1,5 +1,5 @@
 export type DataObject = {
-  testSuites: {
+  testSuites?: {
     name: string;
     testSheets?: {
       id: number;
@@ -17,5 +17,11 @@ export type DataObject = {
     status?:string;
     dataSheet?:string;
     comment?:string
+  }[];
+  locators?:{
+     name:string;
+     subLocators?:{
+      id:string;
+     }[]
   }[]
 };

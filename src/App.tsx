@@ -15,61 +15,67 @@ import SnackBars from "./components/SnackBar/SnackBars";
 
 function App() {
   const { theme, colorMode } = useMode();
-  const { routes, addTestSuite, deleteTestSuite } = useRoutes(staticRoutes);
-  console.log(routes)
-  
+  const { routes, addTestSuite, deleteTestSuite, addLocator, deleteLocator } =
+  useRoutes(staticRoutes);
+  console.log(routes);
+
   return (
     <>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
-        <SnackBarProvider>
-          <BrowserRouter>
-            <Wrapper>
-              <PermissionWrapper>
-                <SideBar addTestSuite={addTestSuite} deleteTestSuite={deleteTestSuite} routes = {routes}/>
-              </PermissionWrapper>
-              <PageWrapper>
-                <TopBar />
-                {/* <Routes>{Router}</Routes> */}
-                <Routes>
-                  {routes.map(
-                    (
-                      route: {
-                        name?: string;
-                        path: string;
-                        element: React.ReactNode;
-                        isSideBar: boolean;
-                        icon?: React.ReactNode;
-                        children?: {
-                          name: string;
+          <SnackBarProvider>
+            <BrowserRouter>
+              <Wrapper>
+                <PermissionWrapper>
+                  <SideBar
+                    addTestSuite={addTestSuite}
+                    deleteTestSuite={deleteTestSuite}
+                    addLocator={addLocator}
+                    deleteLocator={deleteLocator}
+                    routes={routes}
+                  />
+                </PermissionWrapper>
+                <PageWrapper>
+                  <TopBar />
+                  <Routes>
+                    {routes.map(
+                      (
+                        route: {
+                          name?: string;
                           path: string;
                           element: React.ReactNode;
-                          isSideBar?: boolean;
-                        }[];
-                      },
-                      index: number
-                    ) => (
-                      <Route
-                        key={index}
-                        path={route.path}
-                        element={route.element}
-                      >
-                        {route.children &&
-                          route.children.map((child, childIndex) => (
-                            <Route
-                              key={childIndex}
-                              path={child.path}
-                              element={child.element}
-                            />
-                          ))}
-                      </Route>
-                    )
-                  )}
-                </Routes>
-              </PageWrapper>
-            </Wrapper>
-          </BrowserRouter>
-          <SnackBars/>
+                          isSideBar: boolean;
+                          icon?: React.ReactNode;
+                          children?: {
+                            name: string;
+                            path: string;
+                            element: React.ReactNode;
+                            isSideBar?: boolean;
+                          }[];
+                        },
+                        index: number
+                      ) => (
+                        <Route
+                          key={index}
+                          path={route.path}
+                          element={route.element}
+                        >
+                          {route.children &&
+                            route.children.map((child, childIndex) => (
+                              <Route
+                                key={childIndex}
+                                path={child.path}
+                                element={child.element}
+                              />
+                            ))}
+                        </Route>
+                      )
+                    )}
+                  </Routes>
+                </PageWrapper>
+              </Wrapper>
+            </BrowserRouter>
+            <SnackBars />
           </SnackBarProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>

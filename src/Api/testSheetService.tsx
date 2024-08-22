@@ -16,7 +16,7 @@ export const createTestSheet = (
     const dataObject = localStorage.getItem("data");
     if (dataObject) {
       let existingDataObject = JSON.parse(dataObject);
-      //console.log(existingDataObject);
+      
       let filteredTestSuite = existingDataObject.testSuites.find(
         (t: { name: string }) => t.name === testSuite
       );
@@ -27,8 +27,7 @@ export const createTestSheet = (
       } else {
         filteredTestSuite.testSheets.push(testSheet);
       }
-
-      //console.log(filteredTestSuite);
+      
       const testSuiteIndex = existingDataObject.testSuites.findIndex(
         (t: { name: string }) => t.name === testSuite
       );
@@ -37,8 +36,6 @@ export const createTestSheet = (
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
     }
-
-    //   existingDataObject.testSuites.push({ name: testSuite });
     onSuccess();
     return true;
   } catch (error) {
