@@ -27,7 +27,7 @@ import {
 } from "@mui/x-data-grid";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 import { useSnackBars } from "../../../context/SnackBarContext";
-import { SnackBarTypes } from "../../../utils/constants/snackBarTypes";
+import { getLocators } from "../../../api/locatorService";
 
 export default function Test() {
   const columns = [
@@ -133,9 +133,9 @@ export default function Test() {
   const location = useLocation();
 
   const submit = () => {
-    console.log({ ...data, id: uuidv4() });
+    console.log({ ...data, id: uuidv4() , locator:inputValue });
     const response = createTestSheet(
-      { ...data, id: uuidv4() },
+      { ...data, id: uuidv4(), locator:inputValue },
       location.pathname.split("/")[2],
       onSuccess,
       onError
@@ -204,6 +204,64 @@ export default function Test() {
     setOpenConf(false);
   };
 
+  //Autocomplete Handling Implementation
+  const locatorsSet = getLocators();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [locators, setLocators] = useState<string[]>(
+    getLocators().map((locator) => locator.name)
+  );
+
+  const getOptions = (input: string): string[] => {
+    const dotIndex = input.lastIndexOf(".");
+    if (dotIndex > -1) {
+      const labelPart = input.slice(0, dotIndex);
+      const matchingLocator = locatorsSet.find(
+        (suggestion) =>
+          suggestion.name.toLowerCase() === labelPart.toLowerCase()
+      );
+      console.log(matchingLocator);
+      // Extract the sub-locator names
+      if (matchingLocator) {
+        if (matchingLocator.subLocators) {
+          return matchingLocator.subLocators.map(
+            (subLocator) => subLocator.locator_name
+          );
+        }
+      }
+    } else {
+      return locatorsSet.map((suggestion) => suggestion.name);
+    }
+    return [];
+  };
+
+  const handleInputChange = (
+    event: React.ChangeEvent<{}>,
+    newInputValue: string
+  ) => {
+    console.log("handle input");
+    setInputValue(newInputValue);
+    setLocators(getOptions(newInputValue));
+    setOpen(true); // Ensure dropdown is open based on options
+  };
+
+  const handleOptionSelect = (
+    event: React.ChangeEvent<{}>,
+    newValue: string | null
+  ) => {
+    console.log("handle option select");
+    if (newValue) {
+      const dotIndex = inputValue.lastIndexOf(".");
+      if (dotIndex > -1) {
+        const labelPart = inputValue.slice(0, dotIndex + 1);
+        setInputValue(`${labelPart}${newValue}`);
+      } else {
+        setInputValue(newValue);
+      }
+    }
+    setOpen(false); // Close dropdown after selection
+  };
+
   return (
     <ContentWrapper>
       <Box sx={{ display: "flex" }}>
@@ -238,12 +296,17 @@ export default function Test() {
               )}
               disableClearable
             />
+
             {selectedCommand?.data ? (
               <>
                 <Typography>Data</Typography>
                 <TextField
                   name="data"
-                  sx={{ width: "350px" }}
+                  sx={{
+                    width: "350px",
+                    marginBottom: "10px",
+                    backgroundColor: "#f5f7f7",
+                  }}
                   InputProps={{
                     sx: { fontSize: 15, padding: "1px", height: "40px" },
                   }}
@@ -254,7 +317,40 @@ export default function Test() {
                 />
               </>
             ) : null}
+
             {selectedCommand?.locator ? (
+              <>
+                <Typography>Locator</Typography>{" "}
+                <Autocomplete
+                  freeSolo
+                  open={open}
+                  onOpen={() => setOpen(true)}
+                  onClose={() => setOpen(false)}
+                  options={locators}
+                  inputValue={inputValue}
+                  value={inputValue}
+                  onInputChange={handleInputChange}
+                  onChange={(event, newValue) =>
+                    handleOptionSelect(event, newValue)
+                  }
+                  filterOptions={(x) => x} // Prevents filtering, shows all provided options
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label=""
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: "#f5f7f7",
+                      }}
+                      size="small"
+                    />
+                  )}
+                  style={{ height: "50px", width: "350px" }}
+                />
+              </>
+            ) : null}
+
+            {/* {selectedCommand?.locator ? (
               <>
                 <Typography>Locator</Typography>
                 <TextField
@@ -269,7 +365,7 @@ export default function Test() {
                   value={data?.locator}
                 />
               </>
-            ) : null}
+            ) : null} */}
             <Box sx={{ marginTop: "10px" }}>
               <ButtonComponent name="submit" onClick={submit} color="#38b000" />
             </Box>

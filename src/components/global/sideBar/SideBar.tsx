@@ -167,7 +167,7 @@ export default function SideBar(props: SideBarProps) {
                           ) : null
                         }
                       >
-                        <ItemName style={{ fontSize: "15px" }}>
+                        <ItemName style={{ fontSize: "14px", fontWeight:'600' }}>
                           {subRoute.name}
                         </ItemName>
                       </StyledMenuItem>

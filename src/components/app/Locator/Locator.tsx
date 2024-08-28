@@ -29,6 +29,12 @@ import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/Conf
 import { useSnackBars } from "../../../context/SnackBarContext";
 import { SnackBarTypes } from "../../../utils/constants/snackBarTypes";
 import { Locator as LocatorType, locators } from "../../../utils/locators";
+import {
+  createSubLocator,
+  getSubLocators,
+  removeSubLocator,
+} from "../../../api/subLacatorService";
+import { log } from "console";
 
 export default function Locator() {
   const columns = [
@@ -64,7 +70,7 @@ export default function Locator() {
         }
       },
     },
-    
+
     {
       field: "action",
       headerName: "Action",
@@ -123,20 +129,27 @@ export default function Locator() {
   const location = useLocation();
 
   const submit = () => {
+    console.log(data?.locator_name?.length === 0);
+
+    if (data?.locator_name?.length === 0 || data?.locator_value?.length === 0) {
+      onError();
+      return;
+    }
     console.log({ ...data, id: uuidv4() });
-    const response = createTestSheet(
+    const response = createSubLocator(
       { ...data, id: uuidv4() },
       location.pathname.split("/")[2],
       onSuccess,
       onError
     );
+    clearData();
     if (response) {
-      fetchTestSheets();
+      fetchSubLocators();
     }
   };
 
   useEffect(() => {
-    //fetchTestSheets();
+    fetchSubLocators();
   }, [location]);
 
   const rowSelect = (newSelectionModel: GridRowSelectionModel) => {
@@ -145,8 +158,8 @@ export default function Locator() {
     setSelectedRow(newSelectionModel[0]);
   };
 
-  const deleteTestSheet = () => {
-    const response = removeTestSheet(
+  const deleteSubLocator = () => {
+    const response = removeSubLocator(
       location.pathname.split("/")[2],
       selectedRow.toString(),
       onSuccessDelete,
@@ -154,13 +167,13 @@ export default function Locator() {
     );
     handleCloseConf();
     if (response) {
-      fetchTestSheets();
+      fetchSubLocators();
     }
   };
   const onSuccess = () => {
     addSnackBar({
       type: "success",
-      message: "Test Suite Added Successfully",
+      message: "Sub Locator Added Successfully",
     });
   };
   const onSuccessEdit = () => {
@@ -172,7 +185,7 @@ export default function Locator() {
   const onSuccessDelete = () => {
     addSnackBar({
       type: "warning",
-      message: "Test Suite Deleted Successfully",
+      message: "Sub Locator Deleted Successfully",
     });
   };
   const onError = () => {
@@ -182,8 +195,9 @@ export default function Locator() {
     });
   };
 
-  const fetchTestSheets = () => {
-    const data = getTestSheets(location.pathname.split("/")[2]);
+  const fetchSubLocators = () => {
+    const data = getSubLocators(location.pathname.split("/")[2]);
+    console.log(data);
     setTableData(data);
   };
 
@@ -193,6 +207,15 @@ export default function Locator() {
   const handleCloseConf = () => {
     setOpenConf(false);
   };
+
+  const clearData = () => {
+    setData({
+      id: null,
+      locator_name: "",
+      locator_value: "",
+    });
+  };
+
   return (
     <ContentWrapper>
       <Box sx={{ display: "flex" }}>
@@ -204,31 +227,27 @@ export default function Locator() {
         <Box sx={{ width: "50%" }}>
           <TableWrapper sx={{ padding: "20px" }}>
             <Typography>Locator Name</Typography>
-            <Autocomplete
-              id="commands"
-              options={locators}
-              getOptionLabel={(option) => option.locator_name}
-              onChange={(event, newValue) => {
-                setSelectedCommand(newValue);
-                handleInput("locator_name", newValue.locator_name);
-                handleInput("locator_value", newValue.locator_value);
-                console.log(newValue);
+            <TextField
+              sx={{ width: "350px", backgroundColor: "#f5f7f7" }}
+              InputProps={{
+                sx: { fontSize: 15, padding: "1px", height: "40px" },
               }}
-              style={{ height: "50px", width: "350px" }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label=""
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: "#f5f7f7",
-                  }}
-                  size="small"
-                />
-              )}
-              disableClearable
+              onChange={(event) =>
+                handleInput("locator_name", event.target.value)
+              }
+              value={data?.locator_name}
             />
-            
+            <Typography>Locator Value</Typography>
+            <TextField
+              sx={{ width: "350px", backgroundColor: "#f5f7f7" }}
+              InputProps={{
+                sx: { fontSize: 15, padding: "1px", height: "40px" },
+              }}
+              onChange={(event) =>
+                handleInput("locator_value", event.target.value)
+              }
+              value={data?.locator_value}
+            />
             <Box sx={{ marginTop: "10px" }}>
               <ButtonComponent name="submit" onClick={submit} color="#38b000" />
             </Box>
@@ -236,11 +255,11 @@ export default function Locator() {
         </Box>
       </Box>
       <ConfirmationDialog
-        confirmAction={deleteTestSheet}
+        confirmAction={deleteSubLocator}
         formName=""
         handleClose={handleCloseConf}
         open={openConf}
-        confirmMsg="Are you sure to delete this test sheet"
+        confirmMsg="Are you sure to delete this sub locator"
       />
     </ContentWrapper>
   );

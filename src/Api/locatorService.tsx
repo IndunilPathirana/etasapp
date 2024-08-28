@@ -11,17 +11,19 @@ export const createLocator = (locator: string): boolean => {
             subLocators: [],
           },
         ],
+        testSuites: [],
       };
       const stringifiedData = JSON.stringify(data);
       localStorage.setItem("data", stringifiedData);
     } else {
       const existingDataObject = JSON.parse(dataObject);
-      if(!existingDataObject?.locators){
-        existingDataObject.locators = []
+      if (!existingDataObject?.locators) {
+        existingDataObject.locators = [];
       }
       const existingLocator = existingDataObject.locators.find(
-        (l:{name: string}) => l.name === locator);
-      console.log(existingLocator)
+        (l: { name: string }) => l.name === locator
+      );
+      console.log(existingLocator);
       if (existingLocator) {
         return false;
       }
@@ -36,15 +38,33 @@ export const createLocator = (locator: string): boolean => {
   }
 };
 
-export const getLocators = (): { name: string }[] => {
+export const getLocators = (): {
+  name: string;
+  subLocators?: {
+    id: string;
+    locator_name: string;
+    locator_value: string;
+  }[];
+}[] => {
   const dataObject = localStorage.getItem("data");
 
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
-    const locators = existingDataObject.locators.map(
-      (locator: { name: string }) => locator
-    );
-    return locators;
+    if (existingDataObject?.locators) {
+      const locators = existingDataObject?.locators.map(
+        (locator: {
+          name: string;
+          subLocators?: {
+            id: string;
+            locator_name?: string;
+            locator_value?: string;
+          }[];
+        }) => locator
+      );
+      return locators;
+    } else {
+      return [];
+    }
   } else {
     return [];
   }

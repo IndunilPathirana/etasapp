@@ -23,6 +23,7 @@ import {
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
       setLocatorName(event.target.value);
     };
+    
     return (
       <Dialog
         open={props.open}

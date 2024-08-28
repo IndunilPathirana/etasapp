@@ -20,8 +20,10 @@ export type DataObject = {
   }[];
   locators?:{
      name:string;
-     subLocators?:{
+     subLocators:{
       id:string;
+      locator_name:string;
+      locator_value:string
      }[]
   }[]
 };

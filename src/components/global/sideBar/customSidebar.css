@@ -13,6 +13,11 @@
   /* flex-direction: row-reverse !important; */
 }
 
+.css-1tqrhto >.ps-menu-button {
+  flex-direction: row-reverse !important; 
+  padding-right:40px !important;
+}
+
 .ps-submenu-expand-icon{
   opacity: 1 ;
   margin-right: 12px;

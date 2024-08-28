@@ -38,13 +38,13 @@ export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
     try {
       const testSuites = getTestSuites();
       const locators = getLocators();
-      const childrenRoutesTest = testSuites.map((testSuite) => ({
+      const childrenRoutesTest = testSuites?.map((testSuite) => ({
         name: testSuite.name,
         path: `/test/${testSuite.name}`,
         element: <Test />,
         isSideBar: true,
       }));
-      const childrenRoutesLocator = locators.map((locator) => ({
+      const childrenRoutesLocator = locators?.map((locator) => ({
         name: locator.name,
         path: `/locator/${locator.name}`,
         element: <Locator />,
@@ -59,6 +59,7 @@ export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
         }
         return route;
       });
+      console.log(updatedRoutes)
       setRoutes(updatedRoutes);
     } catch (error) {
       console.error("Error fetching test suites:", error);
@@ -73,7 +74,7 @@ export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
     const response = createTestSuite(newTestSuite);
     if (response) {
       //Add your logic to add the test suite to the backend or state
-      //fetchTestSuites(); // Refresh routes
+      fetchModifiedRoutes(); // Refresh routes
       return true;
     } else {
       return false;
@@ -94,6 +95,7 @@ export const useRoutes = (staticRoutes: Route[]): UseRoutesReturnType => {
   const deleteTestSuite = async (index: number) => {
     //Add your logic to delete the test suite from the backend or state
     removeTestSuite(index);
+    fetchModifiedRoutes()
    // await fetchTestSuites(); // Refresh routes
   };
 
