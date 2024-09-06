@@ -25,5 +25,6 @@ export type DataObject = {
       locator_name:string;
       locator_value:string
      }[]
-  }[]
+  }[];
+  dataColumns?:string []
 };

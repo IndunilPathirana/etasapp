@@ -14,7 +14,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getTestSuites } from "../../../../api/testSuiteService";
 import { useSnackBars } from "../../../../context/SnackBarContext";
 import { createLauncher } from "../../../../api/launcherService";

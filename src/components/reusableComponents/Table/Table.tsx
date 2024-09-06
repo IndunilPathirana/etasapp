@@ -47,6 +47,7 @@ export default function Table(props: TableProps) {
           //disableSelectionOnClick
            onRowSelectionModelChange={props?.onRowSelect}
           getRowHeight={getRowHeight}
+          sx={{ width:'auto' }}
         />
       </Box>
     </div>

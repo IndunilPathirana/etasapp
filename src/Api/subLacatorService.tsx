@@ -1,5 +1,3 @@
-import { DataObject } from "./DataStructure";
-
 export const createSubLocator = (
   subLocator: {
     id: string;

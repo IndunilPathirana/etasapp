@@ -9,15 +9,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Command, commands } from "../../../utils/commands";
 import ButtonComponent from "../../reusableComponents/Button/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  createTestSheet,
-  getTestSheets,
-  removeTestSheet,
-} from "../../../api/testSheetService";
 import { useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -34,7 +28,6 @@ import {
   getSubLocators,
   removeSubLocator,
 } from "../../../api/subLacatorService";
-import { log } from "console";
 
 export default function Locator() {
   const columns = [
