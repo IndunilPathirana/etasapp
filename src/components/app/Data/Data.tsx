@@ -19,12 +19,15 @@ import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/Conf
 import { addDataColumn, getDataColumns } from "../../../api/dataService";
 import ColumnAddForm from "./ColumnAddForm/ColumnAddForm";
 import DataForm from "./DataForm/DataForm";
+import { useLocation } from "react-router-dom";
 
 export default function Data() {
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [openDataForm, setOpenDataForm] = useState<boolean>(false);
   const [data, setData] = useState([]);
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
+  const location = useLocation();
+
   const columns = [
     {
       field: "",
@@ -107,7 +110,8 @@ export default function Data() {
   };
 
   const getColumns = () => {
-    const response = getDataColumns();
+    
+    const response = getDataColumns(location.pathname.split("/")[2]);
     console.log(response);
     const modifiedColumns: {
       field: string;
@@ -126,24 +130,26 @@ export default function Data() {
   };
 
   const submitColumn = (column: string) => {
-    const response = addDataColumn(column);
+    const response = addDataColumn(location.pathname.split("/")[2], column);
     getColumns();
     handleClose();
   };
 
   useEffect(() => {
+    setLoading(true)
     getColumns();
-  }, []);
-  
+    console.log("data")
+  }, [location]);
+
   return (
     <ContentWrapper>
       <TableHeader>
         <TableHeaderText>Data Details</TableHeaderText>
         <ButtonComponent
-            name="Add Data"
-            onClick={handleOpenData}
-            color="#38b000"
-          />
+          name="Add Data"
+          onClick={handleOpenData}
+          color="#38b000"
+        />
       </TableHeader>
       <Box sx={{ display: "flex" }}>
         <TableWrapper sx={{ width: "fit-content" }}>
@@ -166,7 +172,11 @@ export default function Data() {
         open={openForm}
         confirmMsg=""
       />
-      <DataForm handleClose={handleCloseData} open={openDataForm} confirmMsg="" />
+      <DataForm
+        handleClose={handleCloseData}
+        open={openDataForm}
+        confirmMsg=""
+      />
     </ContentWrapper>
   );
 }

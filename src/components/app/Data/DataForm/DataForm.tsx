@@ -8,12 +8,11 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getTestSuites } from "../../../../api/testSuiteService";
 import { useSnackBars } from "../../../../context/SnackBarContext";
 import { createLauncher } from "../../../../api/launcherService";
 import { v4 as uuidv4 } from "uuid";
 import { getDataColumns } from "../../../../api/dataService";
-import { log } from "node:console";
+import { useLocation } from "react-router-dom";
 
 type DataFormProps = {
   confirmMsg?: string;
@@ -25,7 +24,7 @@ export default function DataForm(props: DataFormProps) {
   const [formData, setFormData] = useState<{
     [key: string]: string | null;
   }>();
-
+  const location = useLocation();
   const [dataFields, setDataFields] = useState<string[]>([]);
 
   const { addSnackBar } = useSnackBars();
@@ -63,14 +62,13 @@ export default function DataForm(props: DataFormProps) {
     );
     props.handleClose();
   };
-  
+
   useEffect(() => {
-    const testSuites = getTestSuites();
-    const response = getDataColumns();
+    const response = getDataColumns(location.pathname.split("/")[2]);
     setDataFields(response);
     console.log(response);
-  }, []);
-  console.log(formData)
+  }, [location]);
+
   return (
     <Dialog
       open={props.open}

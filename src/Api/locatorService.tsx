@@ -70,13 +70,13 @@ export const getLocators = (): {
   }
 };
 
-export const removeTestSuite = (index: number) => {
+export const removeLocator = (index: number) => {
   const dataObject = localStorage.getItem("data");
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
-    let testSuites = [...existingDataObject.testSuites];
-    testSuites.splice(index, 1);
-    existingDataObject.testSuites = testSuites;
+    let locators = [...existingDataObject.locators];
+    locators.splice(index, 1);
+    existingDataObject.locators = locators;
     const stringifiedData = JSON.stringify(existingDataObject);
     localStorage.setItem("data", stringifiedData);
   }

@@ -15,7 +15,7 @@ import SnackBars from "./components/SnackBar/SnackBars";
 
 function App() {
   const { theme, colorMode } = useMode();
-  const { routes, addTestSuite, deleteTestSuite, addLocator, deleteLocator } =
+  const { routes, addTestSuite, deleteTestSuite, addLocator, deleteLocator ,addDataSheet,deleteDataSheet} =
   useRoutes(staticRoutes);
   console.log(routes);
 
@@ -32,6 +32,8 @@ function App() {
                     deleteTestSuite={deleteTestSuite}
                     addLocator={addLocator}
                     deleteLocator={deleteLocator}
+                    addDataSheet={addDataSheet}
+                    deleteDataSheet={deleteDataSheet}
                     routes={routes}
                   />
                 </PermissionWrapper>
