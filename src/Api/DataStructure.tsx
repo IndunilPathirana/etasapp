@@ -28,7 +28,8 @@ export type DataObject = {
   }[];
   dataSheets?:{
     name:string;
-    dataColumns?:string []
+    dataColumns?:string [];
+    data?:{}[]
   }[];
   dataColumns?:string []
 };

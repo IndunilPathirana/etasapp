@@ -119,14 +119,59 @@ export const getDataColumns = (dataSheet: string): string[] => {
   }
 };
 
-export const removeTestSuite = (index: number) => {
+export const addData = (
+  dataSheet: string,
+  data: {},
+  onSuccess: () => void,
+  onError: () => void
+): boolean => {
+  console.log(dataSheet);
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      let filteredDataSheet = existingDataObject.dataSheets.find(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      console.log("Locator", filteredDataSheet);
+      if (!filteredDataSheet?.data) {
+        filteredDataSheet.data = [];
+        filteredDataSheet.data.push(data);
+      } else {
+        filteredDataSheet.data.push(data);
+      }
+
+      const dataSheetIndex = existingDataObject.dataSheets.findIndex(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      existingDataObject.dataSheets[dataSheetIndex] = filteredDataSheet;
+      console.log(existingDataObject);
+      const stringifiedData = JSON.stringify(existingDataObject);
+      localStorage.setItem("data", stringifiedData);
+    }
+    onSuccess()
+    return true;
+  } catch (error) {
+    console.log(error);
+    onError()
+    return false;
+  }
+};
+
+
+export const getData = (dataSheet: string): {}[] => {
   const dataObject = localStorage.getItem("data");
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
-    let testSuites = [...existingDataObject.testSuites];
-    testSuites.splice(index, 1);
-    existingDataObject.testSuites = testSuites;
-    const stringifiedData = JSON.stringify(existingDataObject);
-    localStorage.setItem("data", stringifiedData);
+    let filteredDataSheet = existingDataObject.dataSheets.find(
+      (t: { name: string }) => t.name === dataSheet
+    );
+    if (filteredDataSheet?.data) {
+      return filteredDataSheet?.data;
+    } else {
+      return [];
+    }
+  } else {
+    return [];
   }
 };

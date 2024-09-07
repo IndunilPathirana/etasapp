@@ -16,7 +16,7 @@ import {
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
-import { addDataColumn, getDataColumns } from "../../../api/dataService";
+import { addDataColumn, getData, getDataColumns } from "../../../api/dataService";
 import ColumnAddForm from "./ColumnAddForm/ColumnAddForm";
 import DataForm from "./DataForm/DataForm";
 import { useLocation } from "react-router-dom";
@@ -24,7 +24,7 @@ import { useLocation } from "react-router-dom";
 export default function Data() {
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [openDataForm, setOpenDataForm] = useState<boolean>(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<{}[]>([]);
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
   const location = useLocation();
 
@@ -133,11 +133,18 @@ export default function Data() {
     const response = addDataColumn(location.pathname.split("/")[2], column);
     getColumns();
     handleClose();
+    getTableData()
   };
+
+  const getTableData = ()=>{
+    const response = getData(location.pathname.split("/")[2])
+    setData(response)
+  }
 
   useEffect(() => {
     setLoading(true)
     getColumns();
+    getTableData()
     console.log("data")
   }, [location]);
 
@@ -176,6 +183,7 @@ export default function Data() {
         handleClose={handleCloseData}
         open={openDataForm}
         confirmMsg=""
+        getTableData={getTableData}
       />
     </ContentWrapper>
   );

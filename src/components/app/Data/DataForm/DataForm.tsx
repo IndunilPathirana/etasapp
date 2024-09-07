@@ -11,13 +11,14 @@ import React, { useEffect, useState } from "react";
 import { useSnackBars } from "../../../../context/SnackBarContext";
 import { createLauncher } from "../../../../api/launcherService";
 import { v4 as uuidv4 } from "uuid";
-import { getDataColumns } from "../../../../api/dataService";
+import { addData, getDataColumns } from "../../../../api/dataService";
 import { useLocation } from "react-router-dom";
 
 type DataFormProps = {
   confirmMsg?: string;
   open: boolean;
   handleClose: () => void;
+  getTableData: () => void;
 };
 
 export default function DataForm(props: DataFormProps) {
@@ -26,13 +27,14 @@ export default function DataForm(props: DataFormProps) {
   }>();
   const location = useLocation();
   const [dataFields, setDataFields] = useState<string[]>([]);
+  
 
   const { addSnackBar } = useSnackBars();
 
   const onSuccess = () => {
     addSnackBar({
       type: "success",
-      message: "Launcher Added Successfully",
+      message: "Data Added Successfully",
     });
   };
 
@@ -52,7 +54,8 @@ export default function DataForm(props: DataFormProps) {
   };
 
   const submitForm = () => {
-    createLauncher(
+    addData(
+      location.pathname.split("/")[2] ,
       {
         ...formData,
         id: uuidv4(),
@@ -61,6 +64,7 @@ export default function DataForm(props: DataFormProps) {
       onError
     );
     props.handleClose();
+    props.getTableData()
   };
 
   useEffect(() => {
