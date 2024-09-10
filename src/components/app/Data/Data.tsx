@@ -16,7 +16,11 @@ import {
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
-import { addDataColumn, getData, getDataColumns } from "../../../api/dataService";
+import {
+  addDataColumn,
+  getData,
+  getDataColumns,
+} from "../../../api/dataService";
 import ColumnAddForm from "./ColumnAddForm/ColumnAddForm";
 import DataForm from "./DataForm/DataForm";
 import { useLocation } from "react-router-dom";
@@ -24,8 +28,10 @@ import { useLocation } from "react-router-dom";
 export default function Data() {
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [openDataForm, setOpenDataForm] = useState<boolean>(false);
-  const [data, setData] = useState<{}[]>([]);
+  const [data, setData] = useState<{ id: string; [key: string]: string }[]>([]);
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
+  const [selectedData, setSelectedData] = useState<{ id: string; [key: string]: string }>();
+  const [action,setAction] = useState<'EDIT'| 'ADD'>('ADD')
   const location = useLocation();
 
   const columns = [
@@ -58,6 +64,7 @@ export default function Data() {
             onClick={(event) => {
               // event.stopPropagation();
               console.log("edit");
+              openEditDataForm()
             }}
           >
             <EditIcon />
@@ -107,10 +114,12 @@ export default function Data() {
     console.log("row selected");
     console.log("Selected Row IDs:", newSelectionModel[0]);
     setSelectedRow(newSelectionModel[0]);
+    const filteredData = data.find((item)=>item?.id === newSelectionModel[0])
+    console.log(filteredData)
+    setSelectedData(filteredData)
   };
 
   const getColumns = () => {
-    
     const response = getDataColumns(location.pathname.split("/")[2]);
     console.log(response);
     const modifiedColumns: {
@@ -125,7 +134,16 @@ export default function Data() {
       width: 100,
       headerClassName: "#", // Replace this with a valid class or value
     }));
-    setTableColumns([...columns, ...modifiedColumns]);
+    let newColumns: {
+      field: string;
+      headerName: string;
+      width: number;
+      headerClassName: string;
+      renderCell?: (params: GridRenderCellParams) => number | JSX.Element;
+    }[] = [columns[0]];
+    newColumns = newColumns.concat(modifiedColumns);
+    newColumns.push(columns[1]);
+    setTableColumns(newColumns);
     setLoading(false);
   };
 
@@ -133,20 +151,25 @@ export default function Data() {
     const response = addDataColumn(location.pathname.split("/")[2], column);
     getColumns();
     handleClose();
-    getTableData()
+    getTableData();
   };
 
-  const getTableData = ()=>{
-    const response = getData(location.pathname.split("/")[2])
-    setData(response)
-  }
+  const getTableData = () => {
+    const response = getData(location.pathname.split("/")[2]);
+    setData(response);
+  };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     getColumns();
-    getTableData()
-    console.log("data")
+    getTableData();
+    console.log("data");
   }, [location]);
+
+  const openEditDataForm = ()=>{
+    setAction('EDIT')
+    setOpenDataForm(true)
+  }
 
   return (
     <ContentWrapper>
@@ -179,12 +202,16 @@ export default function Data() {
         open={openForm}
         confirmMsg=""
       />
-      <DataForm
-        handleClose={handleCloseData}
-        open={openDataForm}
-        confirmMsg=""
-        getTableData={getTableData}
-      />
+      {openDataForm ? (
+        <DataForm
+          handleClose={handleCloseData}
+          open={openDataForm}
+          confirmMsg=""
+          getTableData={getTableData}
+          data={selectedData}
+          action={action}
+        />
+      ) : null}
     </ContentWrapper>
   );
 }

@@ -149,17 +149,18 @@ export const addData = (
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
     }
-    onSuccess()
+    onSuccess();
     return true;
   } catch (error) {
     console.log(error);
-    onError()
+    onError();
     return false;
   }
 };
 
-
-export const getData = (dataSheet: string): {}[] => {
+export const getData = (
+  dataSheet: string
+): { id: string; [key: string]: string }[] => {
   const dataObject = localStorage.getItem("data");
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
@@ -173,5 +174,41 @@ export const getData = (dataSheet: string): {}[] => {
     }
   } else {
     return [];
+  }
+};
+
+export const editData = (
+  dataSheet: string,
+  data: { id: string; [key: string]: string },
+  onSuccess: () => void,
+  onError: () => void
+): boolean => {
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      let filteredDataSheet = existingDataObject.dataSheets.find(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      let dataArray = filteredDataSheet.data;
+      let dataIndex = filteredDataSheet?.data.findIndex(
+        (d: { id: string; [key: string]: string }) => d.id === data.id
+      );
+      dataArray[dataIndex] = data;
+      filteredDataSheet.data = dataArray;
+      let filteredDataSheetIndex = existingDataObject.dataSheets.findIndex(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      existingDataObject.dataSheets[filteredDataSheetIndex] = filteredDataSheet;
+      const stringifiedData = JSON.stringify(existingDataObject);
+      localStorage.setItem("data", stringifiedData);
+      onSuccess();
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    onError();
+    return false;
   }
 };
