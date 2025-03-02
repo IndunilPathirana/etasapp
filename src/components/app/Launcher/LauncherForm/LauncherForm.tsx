@@ -19,6 +19,7 @@ import { getTestSuites } from "../../../../api/testSuiteService";
 import { useSnackBars } from "../../../../context/SnackBarContext";
 import { createLauncher } from "../../../../api/launcherService";
 import { v4 as uuidv4 } from "uuid";
+import { getDataSheets } from "../../../../api/dataService";
 
 type LauncherFormProps = {
   confirmMsg?: string;
@@ -48,6 +49,7 @@ export default function LauncherForm(props: LauncherFormProps) {
   >([{ name: "" }]);
 
   const { addSnackBar } = useSnackBars();
+  const [dataSheets, setDataSheets] = useState<{ name: string }[]>();
 
   const onSuccess = () => {
     addSnackBar({
@@ -80,14 +82,20 @@ export default function LauncherForm(props: LauncherFormProps) {
       onSuccess,
       onError
     );
-    props.handleClose()
-    props.getAllLaunchers()
+    props.handleClose();
+    props.getAllLaunchers();
   };
 
   useEffect(() => {
     const testSuites = getTestSuites();
     setTestSuites(testSuites);
     console.log(testSuites);
+    const dataSheets = getDataSheets();
+    const dataSheetsNames = dataSheets?.map((data) => ({
+      name: data.name,
+    }));
+    console.log(dataSheetsNames);
+    setDataSheets(dataSheetsNames);
   }, []);
 
   return (
@@ -115,7 +123,7 @@ export default function LauncherForm(props: LauncherFormProps) {
       </DialogTitle>
       <DialogContent sx={{ paddingInline: "15px" }}>
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
-          Sheet Name
+          Test Case
         </DialogContentText>
         <TextField
           sx={{ width: "350px" }}
@@ -126,7 +134,7 @@ export default function LauncherForm(props: LauncherFormProps) {
           value={formData?.sheetName}
         />
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
-          Test Case
+          Sheet Name
         </DialogContentText>
         <Autocomplete
           id="commands"
@@ -182,20 +190,13 @@ export default function LauncherForm(props: LauncherFormProps) {
                 label="Microsoft Edge"
               />
             </Grid>
-            <Grid item lg={6}>
-              <FormControlLabel
-                value="Internet Explore"
-                control={<Radio />}
-                label="Internet Explore"
-              />
-            </Grid>
           </Grid>
         </RadioGroup>
 
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Test Type
         </DialogContentText>
-        <Select
+        {/* <Select
           value={formData?.testType || ""}
           onChange={(event) => handleInput("testType", event.target.value)}
           sx={{
@@ -205,11 +206,35 @@ export default function LauncherForm(props: LauncherFormProps) {
         >
           <MenuItem value={"Sequential"}>Sequential</MenuItem>
           <MenuItem value={"Data Driven"}>Data Driven</MenuItem>
-        </Select>
+        </Select> */}
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="female"
+          name="radio-buttons-group"
+          onChange={(event) => handleInput("testType", event.target.value)}
+          value={formData?.testType}
+        >
+          <Grid container sx={{ width: "350px" }}>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Sequential"
+                control={<Radio />}
+                label="Sequential"
+              />
+            </Grid>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Data Driven"
+                control={<Radio />}
+                label="Data Driven"
+              />
+            </Grid>
+          </Grid>
+        </RadioGroup>
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Status
         </DialogContentText>
-        <Select
+        {/* <Select
           value={formData?.status || ""}
           onChange={(event) => handleInput("status", event.target.value)}
           sx={{
@@ -219,7 +244,31 @@ export default function LauncherForm(props: LauncherFormProps) {
         >
           <MenuItem value={"Enabled"}>Enabled</MenuItem>
           <MenuItem value={"Disabled"}>Disabled</MenuItem>
-        </Select>
+        </Select> */}
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="female"
+          name="radio-buttons-group"
+          onChange={(event) => handleInput("status", event.target.value)}
+          value={formData?.status}
+        >
+          <Grid container sx={{ width: "350px" }}>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Enabled"
+                control={<Radio />}
+                label="Enabled"
+              />
+            </Grid>
+            <Grid item lg={6}>
+              <FormControlLabel
+                value="Disabled"
+                control={<Radio />}
+                label="Disabled"
+              />
+            </Grid>
+          </Grid>
+        </RadioGroup>
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Data Sheet
         </DialogContentText>
@@ -231,8 +280,9 @@ export default function LauncherForm(props: LauncherFormProps) {
           }}
           size="small"
         >
-          {/* <MenuItem value={"DAILY"}>Daily</MenuItem>
-          <MenuItem value={"MONTHLY"}>Monthly</MenuItem> */}
+          {dataSheets?.map((obj: { name: string }) => (
+            <MenuItem value={"DAILY"}>{obj.name}</MenuItem>
+          ))}
         </Select>
         <DialogContentText id="delete-description" sx={{ fontSize: "15px" }}>
           Comment

@@ -24,5 +24,6 @@ const StyledButton = styled(Button)<{ customcolor: string }>`
     &:hover {
     background-color: ${(props) => props.customcolor};
     box-shadow: rgba(0, 0, 0, 0.45) 0px 5px 10px;
+    
   }
 `

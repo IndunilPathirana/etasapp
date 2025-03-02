@@ -21,13 +21,13 @@ export const createLocator = (locator: string): boolean => {
         existingDataObject.locators = [];
       }
       const existingLocator = existingDataObject.locators.find(
-        (l: { name: string }) => l.name === locator
+        (l: { name: string }) => l.name === '#Loc.' +locator
       );
       console.log(existingLocator);
       if (existingLocator) {
         return false;
       }
-      existingDataObject.locators.push({ name: locator });
+      existingDataObject.locators.push({ name: '#Loc.' +locator });
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
     }

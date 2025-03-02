@@ -20,19 +20,27 @@ import {
   addDataColumn,
   getData,
   getDataColumns,
+  removeData,
 } from "../../../api/dataService";
 import ColumnAddForm from "./ColumnAddForm/ColumnAddForm";
 import DataForm from "./DataForm/DataForm";
 import { useLocation } from "react-router-dom";
+import { useSnackBars } from "../../../context/SnackBarContext";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Data() {
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [openDataForm, setOpenDataForm] = useState<boolean>(false);
   const [data, setData] = useState<{ id: string; [key: string]: string }[]>([]);
   const [selectedRow, setSelectedRow] = useState<GridRowId>("");
-  const [selectedData, setSelectedData] = useState<{ id: string; [key: string]: string }>();
-  const [action,setAction] = useState<'EDIT'| 'ADD'>('ADD')
+  const [selectedData, setSelectedData] = useState<{
+    id: string;
+    [key: string]: string;
+  }>();
+  const [action, setAction] = useState<"EDIT" | "ADD">("ADD");
   const location = useLocation();
+
+  const { addSnackBar } = useSnackBars();
 
   const columns = [
     {
@@ -64,7 +72,7 @@ export default function Data() {
             onClick={(event) => {
               // event.stopPropagation();
               console.log("edit");
-              openEditDataForm()
+              openEditDataForm();
             }}
           >
             <EditIcon />
@@ -73,7 +81,8 @@ export default function Data() {
             color="primary"
             aria-label="delete"
             onClick={() => {
-              // handleOpenConf();
+              handleOpenConf();
+              console.log("delete row");
             }}
           >
             <DeleteIcon />
@@ -85,6 +94,7 @@ export default function Data() {
 
   const [tableColumns, setTableColumns] = useState<
     {
+      id?: string;
       field: string;
       headerName: string;
       width: number;
@@ -93,6 +103,31 @@ export default function Data() {
     }[]
   >(columns);
   const [loading, setLoading] = useState<boolean>(true);
+  const [openConf, setOpenConf] = useState<boolean>(false);
+
+  const [openConfColumnDelete, setOpenConfColumnDelete] =
+    useState<boolean>(false);
+
+  const deleteData = () => {
+    console.log(selectedRow.toString());
+    const response = removeData(
+      location.pathname.split("/")[2],
+      selectedRow.toString(),
+      onSuccessDelete,
+      onError
+    );
+    handleCloseConf();
+    if (response) {
+      getTableData();
+    }
+  };
+
+  const handleOpenConf = () => {
+    setOpenConf(true);
+  };
+  const handleCloseConf = () => {
+    setOpenConf(false);
+  };
 
   const handleOpen = () => {
     setOpenForm(true);
@@ -110,27 +145,44 @@ export default function Data() {
     setOpenDataForm(false);
   };
 
+  const onSuccessDelete = () => {
+    addSnackBar({
+      type: "warning",
+      message: "Data Deleted Successfully",
+    });
+  };
+
+  const onError = () => {
+    addSnackBar({
+      type: "error",
+      message: "There is an error",
+    });
+  };
+
   const rowSelect = (newSelectionModel: GridRowSelectionModel) => {
     console.log("row selected");
     console.log("Selected Row IDs:", newSelectionModel[0]);
     setSelectedRow(newSelectionModel[0]);
-    const filteredData = data.find((item)=>item?.id === newSelectionModel[0])
-    console.log(filteredData)
-    setSelectedData(filteredData)
+    const filteredData = data.find((item) => item?.id === newSelectionModel[0]);
+    console.log(filteredData);
+    setSelectedData(filteredData);
   };
 
   const getColumns = () => {
-    const response = getDataColumns(location.pathname.split("/")[2]);
+    const decodedPath = decodeURIComponent(location.pathname);
+    const response = getDataColumns(decodedPath.split("/")[2]);
     console.log(response);
     const modifiedColumns: {
+      id?: string;
       field: string;
       headerName: string;
       width: number;
       headerClassName: string;
       renderCell?: (params: GridRenderCellParams) => number | JSX.Element;
-    }[] = response.map((column: string) => ({
-      field: column,
-      headerName: column,
+    }[] = response.map((column: { id: string; column: string }) => ({
+      id: column.id,
+      field: column.column,
+      headerName: column.column,
       width: 100,
       headerClassName: "#", // Replace this with a valid class or value
     }));
@@ -148,14 +200,21 @@ export default function Data() {
   };
 
   const submitColumn = (column: string) => {
-    const response = addDataColumn(location.pathname.split("/")[2], column);
+    // Decode the pathname to replace %20 with spaces
+    const decodedPath = decodeURIComponent(location.pathname);
+    console.log(decodedPath.split("/")[2]);
+    const response = addDataColumn(decodedPath.split("/")[2], {
+      id: uuidv4(),
+      column: column,
+    });
     getColumns();
     handleClose();
     getTableData();
   };
 
   const getTableData = () => {
-    const response = getData(location.pathname.split("/")[2]);
+    const decodedPath = decodeURIComponent(location.pathname);
+    const response = getData(decodedPath.split("/")[2]);
     setData(response);
   };
 
@@ -166,33 +225,54 @@ export default function Data() {
     console.log("data");
   }, [location]);
 
-  const openEditDataForm = ()=>{
-    setAction('EDIT')
-    setOpenDataForm(true)
-  }
+  const openEditDataForm = () => {
+    setAction("EDIT");
+    setOpenDataForm(true);
+  };
+
+  const onRemoveColumn = (columnId: string) => {
+    handleOpenConfDeleteColumn();
+    console.log("Remove Collumn " + columnId);
+  };
+
+  const handleOpenConfDeleteColumn = () => {
+    setOpenConfColumnDelete(true);
+  };
+  const handleCloseConfDeleteColumn = () => {
+    setOpenConfColumnDelete(false);
+  };
 
   return (
     <ContentWrapper>
       <TableHeader>
         <TableHeaderText>Data Details</TableHeaderText>
-        <ButtonComponent
-          name="Add Data"
-          onClick={handleOpenData}
-          color="#38b000"
-        />
       </TableHeader>
       <Box sx={{ display: "flex" }}>
         <TableWrapper sx={{ width: "fit-content" }}>
           {loading === false && (
-            <Table columns={tableColumns} data={data} onRowSelect={rowSelect} />
+            <Table
+              columns={tableColumns}
+              data={data}
+              onRowSelect={rowSelect}
+              onRemoveColumn={onRemoveColumn}
+            />
           )}
         </TableWrapper>
-        <Box sx={{ padding: "20px" }}>
-          <ButtonComponent
-            name="Add Column"
-            onClick={handleOpen}
-            color="#38b000"
-          />
+        <Box sx={{ padding: "20px", display: "flex" }}>
+          <Box sx={{ padding: "10px" }}>
+            <ButtonComponent
+              name="Add Column"
+              onClick={handleOpen}
+              color="#38b000"
+            />
+          </Box>
+          <Box sx={{ padding: "10px" }}>
+            <ButtonComponent
+              name="Add Data"
+              onClick={handleOpenData}
+              color="#38b000"
+            />
+          </Box>
         </Box>
       </Box>
       <ColumnAddForm
@@ -212,6 +292,20 @@ export default function Data() {
           action={action}
         />
       ) : null}
+      <ConfirmationDialog
+        confirmAction={deleteData}
+        formName=""
+        handleClose={handleCloseConf}
+        open={openConf}
+        confirmMsg="Are you sure to delete this data"
+      />
+      <ConfirmationDialog
+        confirmAction={deleteData}
+        formName=""
+        handleClose={handleCloseConfDeleteColumn}
+        open={openConfColumnDelete}
+        confirmMsg="Are you sure to remove this column"
+      />
     </ContentWrapper>
   );
 }

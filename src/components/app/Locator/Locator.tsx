@@ -123,6 +123,11 @@ export default function Locator() {
 
   const submit = () => {
     console.log(data?.locator_name?.length === 0);
+    console.log(location.pathname)
+    console.log(location.search)
+    console.log(location.hash)
+
+
 
     if (data?.locator_name?.length === 0 || data?.locator_value?.length === 0) {
       onError();
@@ -131,7 +136,7 @@ export default function Locator() {
     console.log({ ...data, id: uuidv4() });
     const response = createSubLocator(
       { ...data, id: uuidv4() },
-      location.pathname.split("/")[2],
+      location.hash,
       onSuccess,
       onError
     );
@@ -189,7 +194,7 @@ export default function Locator() {
   };
 
   const fetchSubLocators = () => {
-    const data = getSubLocators(location.pathname.split("/")[2]);
+    const data = getSubLocators(location.hash);
     console.log(data);
     setTableData(data);
   };

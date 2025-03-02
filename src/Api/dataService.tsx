@@ -70,7 +70,7 @@ export const removeDataSheet = (index: number) => {
   }
 };
 
-export const addDataColumn = (dataSheet: string, column: string): boolean => {
+export const addDataColumn = (dataSheet: string, column: {id:string;column:string}): boolean => {
   console.log(dataSheet);
   try {
     const dataObject = localStorage.getItem("data");
@@ -102,7 +102,7 @@ export const addDataColumn = (dataSheet: string, column: string): boolean => {
   }
 };
 
-export const getDataColumns = (dataSheet: string): string[] => {
+export const getDataColumns = (dataSheet: string): {id:string;column:string}[] => {
   const dataObject = localStorage.getItem("data");
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
@@ -209,6 +209,76 @@ export const editData = (
     }
   } catch (error) {
     onError();
+    return false;
+  }
+};
+
+export const removeData = (
+  dataSheet: string,
+  id: string,
+  onSuccess: () => void,
+  onError: () => void
+): boolean => {
+  console.log("remove test Sheets");
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      console.log(existingDataObject);
+      let filteredDataSheet = existingDataObject.dataSheets.find(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      let dataArray = filteredDataSheet.data;
+      let filteredData = filteredDataSheet.data.filter(
+        (d: { id: string; [key: string]: string }) => d.id !== id
+      );
+      filteredDataSheet.data = filteredData;
+      let filteredDataSheetIndex = existingDataObject.dataSheets.findIndex(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      existingDataObject[filteredDataSheetIndex] = filteredDataSheet;
+      console.log(existingDataObject);
+      const stringifiedData = JSON.stringify(existingDataObject);
+      localStorage.setItem("data", stringifiedData);
+    }
+    onSuccess();
+    return true;
+  } catch (error) {
+    console.log(error);
+    onError();
+    return false;
+  }
+};
+
+
+export const removeDataColumn = (dataSheet: string, column: {id:string;column:string}): boolean => {
+  console.log(dataSheet);
+  try {
+    const dataObject = localStorage.getItem("data");
+    if (dataObject) {
+      let existingDataObject = JSON.parse(dataObject);
+      let filteredDataSheet = existingDataObject.dataSheets.find(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      console.log("Locator", filteredDataSheet);
+      if (!filteredDataSheet?.dataColumns) {
+        filteredDataSheet.dataColumns = [];
+        filteredDataSheet.dataColumns.push(column);
+      } else {
+        filteredDataSheet.dataColumns.push(column);
+      }
+
+      const dataSheetIndex = existingDataObject.dataSheets.findIndex(
+        (t: { name: string }) => t.name === dataSheet
+      );
+      existingDataObject.dataSheets[dataSheetIndex] = filteredDataSheet;
+      console.log(existingDataObject);
+      const stringifiedData = JSON.stringify(existingDataObject);
+      localStorage.setItem("data", stringifiedData);
+    }
+    return true;
+  } catch (error) {
+    console.log(error);
     return false;
   }
 };

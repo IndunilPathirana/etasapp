@@ -9,6 +9,7 @@ export const createSubLocator = (
   onError: () => void
 ): boolean => {
   try {
+    console.log("Locator", locator);
     const dataObject = localStorage.getItem("data");
     if (dataObject) {
       let existingDataObject = JSON.parse(dataObject);

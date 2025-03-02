@@ -28,7 +28,7 @@ export type DataObject = {
   }[];
   dataSheets?: {
     name: string;
-    dataColumns?: string[];
+    dataColumns?: { id: string; column_name: string }[];
     data?: { id: string; [key: string]: string }[];
   }[];
   dataColumns?: string[];

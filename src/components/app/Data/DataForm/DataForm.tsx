@@ -28,7 +28,7 @@ export default function DataForm(props: DataFormProps) {
     [key: string]: string | null;
   }>(props.action === 'EDIT' ? { ...props.data } : {});
   const location = useLocation();
-  const [dataFields, setDataFields] = useState<string[]>([]);
+  const [dataFields, setDataFields] = useState<{id:string;column:string}[]>([]);
 
   const { addSnackBar } = useSnackBars();
 
@@ -52,8 +52,6 @@ export default function DataForm(props: DataFormProps) {
       message: "Data Updated Successfully",
     });
   };
-
-  
 
   const handleInput = (target: string, value: string) => {
     setFormData((current = {}) => {
@@ -90,6 +88,7 @@ export default function DataForm(props: DataFormProps) {
 
   useEffect(() => {
     const response = getDataColumns(location.pathname.split("/")[2]);
+    console.log(response)
     setDataFields(response);
     console.log(response);
   }, [location]);
@@ -118,21 +117,21 @@ export default function DataForm(props: DataFormProps) {
         {"Data Form"}
       </DialogTitle>
       <DialogContent sx={{ paddingInline: "15px" }}>
-        {dataFields.map((field: string) => (
+        {dataFields.map((data: {id:string;column:string}) => (
           <>
             <DialogContentText
               id="delete-description"
               sx={{ fontSize: "15px" }}
             >
-              {field}
+              {data.column}
             </DialogContentText>
             <TextField
               sx={{ width: "350px" }}
               InputProps={{
                 sx: { fontSize: 15, padding: "1px", height: "40px" },
               }}
-              onChange={(event) => handleInput(`${field}`, event.target.value)}
-              value={formData?.[field]}
+              onChange={(event) => handleInput(`${data.column}`, event.target.value)}
+              value={formData?.[data.column]}
             />
           </>
         ))}
