@@ -21,6 +21,7 @@ import {
   getData,
   getDataColumns,
   removeData,
+  removeDataColumn,
 } from "../../../api/dataService";
 import ColumnAddForm from "./ColumnAddForm/ColumnAddForm";
 import DataForm from "./DataForm/DataForm";
@@ -107,6 +108,8 @@ export default function Data() {
 
   const [openConfColumnDelete, setOpenConfColumnDelete] =
     useState<boolean>(false);
+
+  const [removingColumn, setRemovingColumn] = useState<string>("");
 
   const deleteData = () => {
     console.log(selectedRow.toString());
@@ -233,6 +236,7 @@ export default function Data() {
   const onRemoveColumn = (columnId: string) => {
     handleOpenConfDeleteColumn();
     console.log("Remove Collumn " + columnId);
+    setRemovingColumn(columnId);
   };
 
   const handleOpenConfDeleteColumn = () => {
@@ -240,6 +244,37 @@ export default function Data() {
   };
   const handleCloseConfDeleteColumn = () => {
     setOpenConfColumnDelete(false);
+  };
+
+  const onSuccessDeleteColumn = () => {
+    addSnackBar({
+      type: "warning",
+      message: "Data Column Deleted Successfully",
+    });
+  };
+
+  const onErrorDeleteColumn = () => {
+    addSnackBar({
+      type: "warning",
+      message: "Data Column Deleted Successfully",
+    });
+  };
+
+  const removeColumn = () => {
+    const decodedPath = decodeURIComponent(location.pathname);
+
+    const response = removeDataColumn(
+      decodedPath.split("/")[2],
+      removingColumn
+    );
+    if (response) {
+      onSuccessDeleteColumn();
+      handleCloseConfDeleteColumn();
+      getColumns();
+      getTableData();
+    } else {
+      onErrorDeleteColumn();
+    }
   };
 
   return (
@@ -300,7 +335,7 @@ export default function Data() {
         confirmMsg="Are you sure to delete this data"
       />
       <ConfirmationDialog
-        confirmAction={deleteData}
+        confirmAction={removeColumn}
         formName=""
         handleClose={handleCloseConfDeleteColumn}
         open={openConfColumnDelete}

@@ -70,7 +70,10 @@ export const removeDataSheet = (index: number) => {
   }
 };
 
-export const addDataColumn = (dataSheet: string, column: {id:string;column:string}): boolean => {
+export const addDataColumn = (
+  dataSheet: string,
+  column: { id: string; column: string }
+): boolean => {
   console.log(dataSheet);
   try {
     const dataObject = localStorage.getItem("data");
@@ -102,7 +105,9 @@ export const addDataColumn = (dataSheet: string, column: {id:string;column:strin
   }
 };
 
-export const getDataColumns = (dataSheet: string): {id:string;column:string}[] => {
+export const getDataColumns = (
+  dataSheet: string
+): { id: string; column: string }[] => {
   const dataObject = localStorage.getItem("data");
   if (dataObject) {
     const existingDataObject = JSON.parse(dataObject);
@@ -250,9 +255,11 @@ export const removeData = (
   }
 };
 
-
-export const removeDataColumn = (dataSheet: string, column: {id:string;column:string}): boolean => {
-  console.log(dataSheet);
+export const removeDataColumn = (
+  dataSheet: string,
+  column: string
+): boolean => {
+  console.log(dataSheet, "Dataaaaaaaaaa");
   try {
     const dataObject = localStorage.getItem("data");
     if (dataObject) {
@@ -261,20 +268,19 @@ export const removeDataColumn = (dataSheet: string, column: {id:string;column:st
         (t: { name: string }) => t.name === dataSheet
       );
       console.log("Locator", filteredDataSheet);
-      if (!filteredDataSheet?.dataColumns) {
-        filteredDataSheet.dataColumns = [];
-        filteredDataSheet.dataColumns.push(column);
-      } else {
-        filteredDataSheet.dataColumns.push(column);
-      }
-
+      let alteredDataColumns = filteredDataSheet?.dataColumns.filter(
+        (columnItem: { id: string; column: string }) =>
+          columnItem.column !== column
+      );
       const dataSheetIndex = existingDataObject.dataSheets.findIndex(
         (t: { name: string }) => t.name === dataSheet
       );
+      filteredDataSheet.dataColumns = alteredDataColumns;
       existingDataObject.dataSheets[dataSheetIndex] = filteredDataSheet;
-      console.log(existingDataObject);
       const stringifiedData = JSON.stringify(existingDataObject);
       localStorage.setItem("data", stringifiedData);
+      console.log(alteredDataColumns);
+      return true;
     }
     return true;
   } catch (error) {
