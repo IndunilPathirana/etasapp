@@ -215,7 +215,8 @@ export default function SideBar(props: SideBarProps) {
               route.name === "Data"
             ) {
               return (
-                <SubMenu
+                <StyledSubMenu
+                style={{ fontWeight: "800" }}
                   label={route.name}
                   icon={
                     <IconButton
@@ -273,7 +274,7 @@ export default function SideBar(props: SideBarProps) {
                       </StyledMenuItem>
                     </Link>
                   ))}
-                </SubMenu>
+                </StyledSubMenu>
               );
             }
             return (
@@ -366,5 +367,16 @@ export const ItemName = Styled(Typography)`
   && {
     font-size: 14px;
     margin: 10px 0;
+    font-weight:600
+  }
+`;
+
+// Create a styled SubMenu component
+const StyledSubMenu = styled(SubMenu)`
+  .pro-inner-item {
+    
+  }
+  .ps-menu-label{
+    font-weight: 700;
   }
 `;

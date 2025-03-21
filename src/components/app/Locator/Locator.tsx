@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
-import { TableWrapper } from "../../reusableComponents/StyledComponents/styledComponents";
-import Table from "../../reusableComponents/Table/Table";
 import {
-  Autocomplete,
-  Box,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+  TableHeader,
+  TableHeaderText,
+  TableWrapper,
+} from "../../reusableComponents/StyledComponents/styledComponents";
+import Table from "../../reusableComponents/Table/Table";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import ButtonComponent from "../../reusableComponents/Button/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,7 +19,6 @@ import {
 } from "@mui/x-data-grid";
 import ConfirmationDialog from "../../reusableComponents/ConfirmationDialog/ConfirmationDialog";
 import { useSnackBars } from "../../../context/SnackBarContext";
-import { SnackBarTypes } from "../../../utils/constants/snackBarTypes";
 import { Locator as LocatorType, locators } from "../../../utils/locators";
 import {
   createSubLocator,
@@ -55,7 +52,7 @@ export default function Locator() {
     {
       field: "locator_value",
       headerName: "Value",
-      width: 100,
+      width: 200,
       headerClassName: "#",
       renderCell: (params: GridRenderCellParams) => {
         if (params.row.data === null) {
@@ -76,7 +73,6 @@ export default function Locator() {
             color="primary"
             aria-label="delete"
             onClick={(event) => {
-              // event.stopPropagation();
               console.log("edit");
             }}
           >
@@ -123,11 +119,9 @@ export default function Locator() {
 
   const submit = () => {
     console.log(data?.locator_name?.length === 0);
-    console.log(location.pathname)
-    console.log(location.search)
-    console.log(location.hash)
-
-
+    console.log(location.pathname);
+    console.log(location.search);
+    console.log(location.hash);
 
     if (data?.locator_name?.length === 0 || data?.locator_value?.length === 0) {
       onError();
@@ -216,6 +210,9 @@ export default function Locator() {
 
   return (
     <ContentWrapper>
+      <TableHeader>
+        <TableHeaderText>Locator Details Details</TableHeaderText>
+      </TableHeader>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ width: "50%" }}>
           <TableWrapper>

@@ -1,4 +1,4 @@
-import { DataObject } from "./DataStructure";
+import { DataObject } from "./dataStructure/DataStructure";
 
 export const createDataSheet = (dataSheet: string): boolean => {
   try {

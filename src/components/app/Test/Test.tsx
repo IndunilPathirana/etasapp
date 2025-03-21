@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ContentWrapper } from "../../global/contentWrapper/contentWrapper";
-import { TableWrapper } from "../../reusableComponents/StyledComponents/styledComponents";
+import {
+  TableHeader,
+  TableHeaderText,
+  TableWrapper,
+} from "../../reusableComponents/StyledComponents/styledComponents";
 import Table from "../../reusableComponents/Table/Table";
 import {
   Autocomplete,
@@ -66,7 +70,7 @@ export default function Test() {
     {
       field: "locator",
       headerName: "Locator",
-      width: 100,
+      width: 200,
       headerClassName: "#",
       renderCell: (params: GridRenderCellParams) => {
         if (params.row.locator === null) {
@@ -133,9 +137,9 @@ export default function Test() {
   const location = useLocation();
 
   const submit = () => {
-    console.log({ ...data, id: uuidv4() , locator:inputValue });
+    console.log({ ...data, id: uuidv4(), locator: inputValue });
     const response = createTestSheet(
-      { ...data, id: uuidv4(), locator:inputValue },
+      { ...data, id: uuidv4(), locator: inputValue },
       location.pathname.split("/")[2],
       onSuccess,
       onError
@@ -264,6 +268,9 @@ export default function Test() {
 
   return (
     <ContentWrapper>
+      <TableHeader>
+        <TableHeaderText>Test Details</TableHeaderText>
+      </TableHeader>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ width: "50%" }}>
           <TableWrapper>

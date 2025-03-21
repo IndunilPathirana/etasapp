@@ -5,7 +5,7 @@ import {
   GridSlotsComponentsProps,
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
-import { Box, MenuItem, Typography } from "@mui/material";
+import { Box, MenuItem } from "@mui/material";
 import { styled, Theme } from "@mui/material/styles";
 
 type TableProps = {
@@ -19,7 +19,7 @@ type TableProps = {
   }[];
   data: {}[];
   onRowSelect?: (newSelectionModel: GridRowSelectionModel) => void;
-  onRemoveColumn?: (columnId:string) => void;
+  onRemoveColumn?: (columnId: string) => void;
 };
 
 // Define a custom interface that extends GridColumnMenuProps
@@ -54,39 +54,34 @@ export default function Table(props: TableProps) {
   };
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
-      <Box
-        sx={{
-          height: 400,
-          // width: "99%",
+    <Box
+      sx={{
+        minHeight: 400,
+        padding: "10px",
+      }}
+    >
+      <StyledDataGrid
+        key={props.columns.length} // Force re-render when columns change
+        rows={props.data}
+        columns={props.columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 15 },
+          },
         }}
-      >
-        <StyledDataGrid
-          //checkboxSelection
-          key={props.columns.length} // Force re-render when columns change
-          rows={props.data}
-          columns={props.columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 15 },
-            },
-          }}
-          // getRowId={getRowId} // Specify the custom ID function
-          //disableSelectionOnClick
-          onRowSelectionModelChange={props?.onRowSelect}
-          getRowHeight={getRowHeight}
-          sx={{ width: "auto" }}
-          slots={{
-            columnMenu: CustomColumnMenu, // Use the custom column menu
-          }}
-          slotProps={{
-            columnMenu: {
-              onRemoveColumn: props.onRemoveColumn, // Pass the custom prop
-            } as GridSlotsComponentsProps["columnMenu"], // Ensure type compatibility
-          }}
-        />
-      </Box>
-    </div>
+        onRowSelectionModelChange={props?.onRowSelect}
+        getRowHeight={getRowHeight}
+        sx={{ width: "auto" }}
+        slots={{
+          columnMenu: CustomColumnMenu, // Use the custom column menu
+        }}
+        slotProps={{
+          columnMenu: {
+            onRemoveColumn: props.onRemoveColumn, // Pass the custom prop
+          } as GridSlotsComponentsProps["columnMenu"], // Ensure type compatibility
+        }}
+      />
+    </Box>
   );
 }
 
@@ -107,7 +102,8 @@ function customCheckbox(theme: Theme) {
 }
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  borderRadius: "10px",
+  // borderRadius: "10px",
+
   width: "100%",
   color:
     theme.palette.mode === "light"
@@ -138,7 +134,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
   "& .MuiDataGrid-row.Mui-selected": {
     backgroundColor: "#E0E0E0",
-    border: "1px solid " + "theme.coreColors.primary",
+    // border: "1px solid " + "theme.coreColors.primary",
 
     "&:hover": {
       backgroundColor: "#E0E0E0",

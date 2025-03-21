@@ -4,7 +4,6 @@ import styled from "styled-components";
 import SideBar from "./components/global/sideBar/SideBar";
 import PermissionWrapper from "./components/permissionWrapper/PermissionWrapper";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Router } from "./routes/router";
 import TopBar from "./components/global/topBar/TopBar";
 import { ColorModeContext, useMode } from "./theme";
 import { ThemeProvider } from "@mui/material";
