@@ -1,3 +1,6 @@
+import { getLocalStorageData, transformRows } from ".";
+import { ExportDataObject } from "./exportDataStructure/ExportJson";
+
 let initialObject = {
   launcher: {
     file: {
@@ -5,17 +8,7 @@ let initialObject = {
       tables: [
         {
           name: "",
-          rows: [
-            {
-              cells: [
-                {
-                  name: "",
-                  value: "",
-                },
-              ],
-              size: 0,
-            },
-          ],
+          rows: [{ name: "", cells: [], size: 0 }],
           size: 0,
         },
       ],
@@ -25,21 +18,51 @@ let initialObject = {
   data: {
     tableSet: {
       name: "",
-      tables: [],
+      tables: [
+        {
+          name: "",
+          rows: [
+            {
+              name: "",
+              cells: [],
+              size: 0,
+            },
+          ],
+          size: 0,
+        },
+      ],
       size: 0,
     },
   },
   locator: {
     tableSet: {
       name: "",
-      tables: [],
+      tables: [
+        {
+          name: "",
+          rows: [{ name: "", cells: [], size: 0 }],
+          size: 0,
+        },
+      ],
       size: 0,
     },
   },
   tests: {
     folder: {
-      name: "",
-      files: [],
+      name: "Tests",
+      files: [
+        {
+          name: "",
+          tables: [
+            {
+              name: "",
+              rows: [{ name: "", cells: [], size: 0 }],
+              size: 0,
+            },
+          ],
+          size: 0,
+        },
+      ],
       size: 0,
     },
   },
@@ -52,122 +75,149 @@ let initialObject = {
   },
 };
 
-export const getJson = (): boolean => {
+export const getJson = (): ExportDataObject => {
   try {
-    getLaunchers();
-    getData();
-    getLocators();
-    return true;
+    return {
+      launcher: getLaunchers(),
+      data: getData(),
+      locator: getLocators(),
+      tests: getTests(),
+      components: { folder: { name: "", files: [], size: 0 } },
+    };
   } catch (error) {
-    return false;
+    console.error("Error generating JSON:", error);
+    return initialObject;
   }
 };
 
 const getLaunchers = () => {
-  const dataObject = localStorage.getItem("data");
-  if (dataObject) {
-    const existingDataObject = JSON.parse(dataObject);
+  try {
+    const existingDataObject = getLocalStorageData("data");
     const launchers = existingDataObject?.launchers;
-    console.log(existingDataObject?.launchers);
-
-    const transformedRows = launchers.map(
-      (obj: {
-        id: string;
-        sheetName?: string;
-        testSuite?: string;
-        browser?: string;
-        testType?: string;
-        status?: string;
-        dataSheet?: string;
-        comment?: string;
-      }) => ({
-        cells: Object.entries(obj)
-          .filter(([key]) => key !== "id") // Exclude "id"
-          .map(([key, value]) => ({ name: key, value: value })), // Convert to name-value pairs
-        size: Object.keys(obj).length - 1, // Calculate size excluding "id"
-      })
-    );
-    initialObject.launcher.file.size = 1;
-    initialObject.launcher.file.name = "Launcher";
-    initialObject.launcher.file.tables[0].name = "json_demo";
-    initialObject.launcher.file.tables[0].size = transformedRows.length;
-    initialObject.launcher.file.tables[0].rows = transformedRows;
-
-    console.log(initialObject);
-    console.log(transformedRows);
+    if (launchers) {
+      return {
+        file: {
+          name: "Launcher",
+          tables: [
+            {
+              name: "json_demo",
+              rows: transformRows(launchers),
+              size: launchers.length,
+            },
+          ],
+          size: 1,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching launchers:", error);
   }
+  return initialObject.launcher;
 };
 
 const getData = () => {
-  const dataObject = localStorage.getItem("data");
-  if (dataObject) {
-    const existingDataObject = JSON.parse(dataObject);
+  try {
+    const existingDataObject = getLocalStorageData("data");
     const dataSheets = existingDataObject?.dataSheets;
-    console.log(existingDataObject?.dataSheets);
+    if (dataSheets) {
+      const transformedTableSet = dataSheets.map(
+        (obj: {
+          name: string;
+          dataColumns?: { id: string; column_name: string }[];
+          data: { id: string; [key: string]: string }[];
+        }) => ({
+          name: obj.name,
 
-    const transformedTableSet = dataSheets.map(
-      (obj: {
-        name: string;
-        dataColumns?: { id: string; column_name: string }[];
-        data?: { id: string; [key: string]: string }[];
-      }) => ({
-        name: obj.name,
-        rows: obj.data?.map(
-          (data: { id: string; [key: string]: string }, index: number) => ({
-            name: index + " row",
-            cells: Object.entries(data)
-              .filter(([key]) => key !== "id") // Exclude "id"
-              .map(([key, value]) => ({ name: key, value: value })), // Convert to name-value pairs
-            size: Object.keys(data).length - 1, // Calculate size excluding "id"
-          })
-        ),
-        size: obj.data?.length,
-      })
-    );
-    initialObject.data.tableSet.tables = transformedTableSet;
-    initialObject.data.tableSet.size = existingDataObject?.dataSheets.length;
-    console.log(initialObject);
+          rows: transformRows(obj?.data),
+          size: obj.data?.length,
+        })
+      );
+
+      return {
+        tableSet: {
+          name: "",
+          tables: transformedTableSet,
+          size: existingDataObject?.dataSheets.length,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
   }
+  return initialObject.data;
 };
 
 const getLocators = () => {
-  const dataObject = localStorage.getItem("data");
-  if (dataObject) {
-    const existingDataObject = JSON.parse(dataObject);
+  try {
+    const existingDataObject = getLocalStorageData("data");
     const locators = existingDataObject?.locators;
-    console.log(existingDataObject?.locators);
+    if (locators) {
+      const transformedTableSet = locators.map(
+        (obj: {
+          name: string;
+          subLocators: {
+            id: string;
+            locator_name: string;
+            locator_value: string;
+          }[];
+        }) => ({
+          name: obj.name,
 
-    const transformedTableSet = locators.map(
-      (obj: {
-        name: string;
-        subLocators: {
-          id: string;
-          locator_name: string;
-          locator_value: string;
-        }[];
-      }) => ({
-        name: obj.name,
-        rows: obj.subLocators?.map(
-          (
-            data: {
-              id: string;
-              locator_name: string;
-              locator_value: string;
-            },
-            index: number
-          ) => ({
-            name: index + " row",
-            cells: Object.entries(data)
-              .filter(([key]) => key !== "id") // Exclude "id"
-              .map(([key, value]) => ({ name: key, value: value })), // Convert to name-value pairs
-            size: Object.keys(data).length - 1, // Calculate size excluding "id"
-          })
-        ),
-        size: obj.subLocators?.length,
-      })
-    );
-    initialObject.locator.tableSet.tables = transformedTableSet;
-    initialObject.locator.tableSet.size = existingDataObject?.locators.length;
-    console.log(initialObject);
+          rows: transformRows(obj.subLocators),
+          size: obj.subLocators?.length,
+        })
+      );
+      return {
+        tableSet: {
+          name: "",
+          tables: transformedTableSet,
+          size: locators.length,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching locators:", error);
   }
+  return initialObject.locator;
+};
+
+const getTests = () => {
+  try {
+    const existingDataObject = getLocalStorageData("data");
+    const testSuites = existingDataObject?.testSuites;
+    if (testSuites) {
+      const transformedTableSet = testSuites.map(
+        (obj: {
+          name: string;
+          testSheets: {
+            id: number;
+            command?: string;
+            data?: string;
+            locator?: string;
+          }[];
+        }) => ({
+          name: obj.name,
+
+          rows: transformRows(obj.testSheets),
+          size: obj.testSheets?.length,
+        })
+      );
+      return {
+        folder: {
+          name: "Tests",
+          files: [
+            {
+              name: "",
+              tables: transformedTableSet,
+              size: 0,
+            },
+          ],
+          size: testSuites.length,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching tests:", error);
+  }
+  return initialObject.tests;
 };

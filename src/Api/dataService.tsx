@@ -233,7 +233,7 @@ export const removeData = (
       let filteredDataSheet = existingDataObject.dataSheets.find(
         (t: { name: string }) => t.name === dataSheet
       );
-      let dataArray = filteredDataSheet.data;
+
       let filteredData = filteredDataSheet.data.filter(
         (d: { id: string; [key: string]: string }) => d.id !== id
       );
